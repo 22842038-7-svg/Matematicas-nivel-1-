@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Icono -->
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135768.png">
+
+    <title>Aprendamos Matemática</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/estilo_mates.css">
+</head>
+
+<body>
+
+    <!-- Número flotante -->
+    <div id="numeroFlotante"></div>
+
+    <!-- Usuario -->
+    <div class="usuario">
+
+        <img id="avatarUsuario"
+            src="https://i.pravatar.cc/150?img=5"
+            alt="Avatar">
+
+        <h2 id="nombreUsuario">Usuario</h2>
+
+    </div>
+
+    <!-- Título -->
+    <header>
+
+        <h1>Aprendamos a contar del 1 al 10</h1>
+
+    </header>
+
+    <!-- Imagen -->
+    <div class="imagen-principal">
+
+        <img src="img/plaataforma.jpg" alt="Números">
+
+    </div>
+
+    <!-- Tarjetas -->
+    <div class="contenedor">
+
+        <div class="tarjeta" onclick="reproducirNumero(1)">1️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(2)">2️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(3)">3️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(4)">4️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(5)">5️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(6)">6️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(7)">7️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(8)">8️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(9)">9️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(10)">🔟</div>
+
+    </div>
+
+    <!-- Botón -->
+    <button class="boton" onclick="mostrarMensaje()">
+
+        Comenzar
+
+    </button>
+
+    <!-- Mensaje -->
+    <p id="mensaje"></p>
+
+    <!-- JS -->
+    <script src="js/matematica.js"></script>
+
+</body>
+
+</html>
