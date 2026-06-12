@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Juego 1 - Sumas</title>
+
+<link rel="stylesheet" href="css/juego1.css">
+
+</head>
+<body>
+
+<img src="img/fondo.jpeg" class="imagen-fondo">
+
+<audio autoplay loop>
+    <source src="audio/musica.mp3">
+</audio>
+
+<audio id="correcto">
+    <source src="audio/correcto.mp3">
+</audio>
+
+<audio id="error">
+    <source src="audio/error.mp3">
+</audio>
+
+<div class="contenedor">
+
+    <div class="perfil">
+
+        <img id="avatarUsuario" src="" alt="Avatar">
+
+        <div>
+            <h2 id="nombreUsuario"></h2>
+            <p>🎓 4° Básico</p>
+        </div>
+
+    </div>
+
+    <h1>🎮 Juego 1: Arrastra la Respuesta</h1>
+
+    <div class="info">
+
+        <div>❤️ <span id="vidas">3</span></div>
+
+        <div>⭐ <span id="estrellas">0</span></div>
+
+    </div>
+
+    <div class="progreso">
+        <div id="barra"></div>
+    </div>
+
+    <p class="instruccion">
+        Arrastra el número correcto a cada operación.
+    </p>
+
+    <div class="ejercicio">
+        <span>3 + 2 =</span>
+        <div class="zona" data-respuesta="5"></div>
+    </div>
+
+    <div class="ejercicio">
+        <span>4 + 3 =</span>
+        <div class="zona" data-respuesta="7"></div>
+    </div>
+
+    <div class="ejercicio">
+        <span>5 + 4 =</span>
+        <div class="zona" data-respuesta="9"></div>
+    </div>
+
+    <div class="numeros">
+
+        <div class="numero" draggable="true">5</div>
+        <div class="numero" draggable="true">7</div>
+        <div class="numero" draggable="true">9</div>
+
+    </div>
+
+</div>
+
+<div id="victoria" class="pantalla oculto">
+
+    <div class="mensaje">
+
+        <h1>🏆 ¡FELICITACIONES!</h1>
+
+        <p>
+            Completaste el Juego 1
+        </p>
+
+        <button onclick="siguienteNivel()">
+            ➡️ Juego 2
+        </button>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<script src="js/juego1.js"></script>
+
+</body>
+</html>

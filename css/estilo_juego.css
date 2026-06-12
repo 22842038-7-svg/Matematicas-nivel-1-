@@ -1,0 +1,273 @@
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    text-align:center;
+    overflow-x:hidden;
+}
+
+/* fondo */
+.imagen-fondo{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:-1;
+    cursor:pointer;
+}
+
+/* contenido */
+.contenido{
+    position:relative;
+    z-index:2;
+    padding:20px;
+}
+
+/* perfil */
+.perfil-jugador{
+    position:fixed;
+    top:20px;
+    right:20px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    z-index:5;
+}
+
+/* avatar */
+#avatarJuego{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    border:3px solid white;
+    object-fit:cover;
+}
+
+/* datos */
+.datos-jugador{
+    background:rgba(255,255,255,.95);
+    padding:10px 14px;
+    border-radius:15px;
+    min-width:130px;
+    text-align:left;
+}
+
+.curso{
+    font-size:18px;
+    font-weight:bold;
+    color:#333;
+}
+
+.estado{
+    margin-top:5px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#2e7d32;
+    font-weight:bold;
+}
+
+.punto{
+    width:12px;
+    height:12px;
+    background:#00c853;
+    border-radius:50%;
+    animation:latido 1s infinite;
+}
+
+@keyframes latido{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.2);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+/* título */
+h1{
+    color:white;
+    font-size:40px;
+    text-shadow:2px 2px 5px black;
+}
+
+/* mensaje */
+#mensaje{
+    font-size:26px;
+    color:white;
+    font-weight:bold;
+    text-shadow:2px 2px 5px black;
+}
+
+/* estrellas */
+#estrellas{
+    font-size:28px;
+    margin-top:10px;
+}
+
+/* barra */
+.barra{
+    width:420px;
+    height:22px;
+    background:white;
+    border-radius:20px;
+    margin:20px auto;
+    overflow:hidden;
+}
+
+.progreso{
+    height:100%;
+    width:0%;
+    background:#4caf50;
+    transition:.3s;
+}
+
+/* tablero */
+.tablero{
+    display:grid;
+    grid-template-columns:repeat(5,90px);
+    gap:15px;
+    justify-content:center;
+    margin-top:25px;
+}
+
+/* casillas */
+.casilla{
+    width:90px;
+    height:90px;
+    background:white;
+    border-radius:15px;
+    border:3px dashed #666;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    transition:.3s;
+}
+
+/* piezas */
+.piezas{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:15px;
+    margin-top:30px;
+}
+
+/* números */
+.numero{
+    width:80px;
+    height:80px;
+    background:#ffd43b;
+    border-radius:15px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:32px;
+    font-weight:bold;
+    cursor:grab;
+    transition:.2s;
+}
+
+.numero:hover{
+    transform:scale(1.05);
+}
+
+/* botón comprobar */
+#comprobar{
+
+    margin-top:25px;
+
+    padding:15px 30px;
+
+    font-size:24px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:linear-gradient(
+        135deg,
+        #ff9800,
+        #f57c00
+    );
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+    0 4px 10px
+    rgba(0,0,0,.25);
+
+    transition:.3s;
+}
+
+#comprobar:hover{
+
+    transform:scale(1.05);
+
+    background:linear-gradient(
+        135deg,
+        #ffb74d,
+        #ef6c00
+    );
+}
+
+/* botón inicio */
+#volverInicio{
+
+    display:inline-block;
+
+    margin-top:20px;
+
+    margin-left:15px;
+
+    padding:14px 28px;
+
+    background:linear-gradient(
+        135deg,
+        #42a5f5,
+        #1e88e5
+    );
+
+    color:white;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    border-radius:18px;
+
+    text-decoration:none;
+
+    box-shadow:
+    0 4px 10px
+    rgba(0,0,0,.25);
+
+    transition:.3s;
+}
+
+#volverInicio:hover{
+
+    transform:scale(1.05);
+
+    background:linear-gradient(
+        135deg,
+        #64b5f6,
+        #1976d2
+    );
+}
+
+/* ocultar */
+.oculto{
+    display:none;
+}

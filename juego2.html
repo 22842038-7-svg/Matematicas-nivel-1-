@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Juego 2 - Memoria Matemática</title>
+
+<link rel="stylesheet" href="css/juego2.css">
+
+</head>
+<body>
+
+<img src="img/fondo.jpeg" class="imagen-fondo">
+
+<audio autoplay loop>
+    <source src="audio/musica.mp3">
+</audio>
+
+<audio id="correcto">
+    <source src="audio/correcto.mp3">
+</audio>
+
+<audio id="error">
+    <source src="audio/error.mp3">
+</audio>
+
+<div class="contenedor">
+
+    <div class="perfil">
+
+        <img id="avatarUsuario" src="">
+
+        <div>
+            <h2 id="nombreUsuario"></h2>
+            <p>🎓 4° Básico</p>
+        </div>
+
+    </div>
+
+    <h1>🧠 Juego 2: Memoria Matemática</h1>
+
+    <div class="panel">
+
+        ❤️ <span id="vidas">3</span>
+
+        ⭐ <span id="pares">0</span>/4
+
+    </div>
+
+    <div class="tablero" id="tablero"></div>
+
+</div>
+
+<div id="victoria" class="pantalla oculto">
+
+    <div class="mensaje">
+
+        <h1>🏆 ¡Excelente!</h1>
+
+        <p>Completaste la memoria matemática.</p>
+
+        <button onclick="siguienteNivel()">
+            ➡️ Juego 3
+        </button>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<script src="js/juego2.js"></script>
+
+</body>
+</html>

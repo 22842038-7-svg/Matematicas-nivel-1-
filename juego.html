@@ -1,0 +1,108 @@
+z<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordena los números</title>
+
+    <link rel="stylesheet" href="css/estilo_juego.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+
+    <img
+        src="img/fondo.jpeg"
+        class="imagen-fondo"
+        id="fondo"
+    >
+
+    <!-- avatar -->
+    <div class="perfil-jugador">
+
+        <img
+            id="avatarJuego"
+            src=""
+            alt=""
+        >
+
+        <div class="datos-jugador">
+
+            <div class="curso">
+                🎓 4° Básico
+            </div>
+
+            <div class="estado">
+
+                <span class="punto"></span>
+
+                En línea
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="contenido">
+
+        <h1>🔢 Ordena los números 🔢</h1>
+
+        <p id="mensaje"></p>
+
+        <div id="estrellas">
+            ⭐⭐⭐
+        </div>
+
+        <div class="barra">
+
+            <div
+                id="progreso"
+                class="progreso"
+            ></div>
+
+        </div>
+
+        <div
+            class="tablero"
+            id="tablero"
+        ></div>
+
+        <div
+            class="piezas"
+            id="piezas"
+        ></div>
+
+        <button
+            id="comprobar"
+            class="oculto"
+        >
+            ✅ Comprobar
+        </button>
+
+        <a
+            href="bienvenido.html"
+            id="volverInicio"
+        >
+            🏠 Volver al inicio
+        </a>
+
+    </div>
+
+    <!-- preguntas -->
+    <div
+        id="preguntaBox"
+        class="oculto"
+    >
+
+        <h2 id="preguntaTexto"></h2>
+
+        <div id="opciones"></div>
+
+    </div>
+
+    <script src="js/juego.js"></script>
+
+</body>
+</html>

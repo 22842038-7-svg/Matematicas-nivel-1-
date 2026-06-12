@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Juego de Divisiones</title>
+
+<link rel="stylesheet" href="css/juego.css">
+
+</head>
+<body data-juego="division">
+
+<img src="img/fondo.jpeg" class="imagen-fondo">
+
+<div class="contenedor">
+
+<div class="perfil">
+
+<img id="avatarUsuario">
+
+<div>
+<h2 id="nombreUsuario"></h2>
+<p>🎓 4° Básico</p>
+</div>
+
+</div>
+
+<div class="panel">
+<span>❤️ <span id="vidas">3</span></span>
+<span>⭐ <span id="estrellas">0</span></span>
+</div>
+
+<div class="progreso">
+<div id="barra"></div>
+</div>
+
+<h1>➗ Juego de Divisiones</h1>
+
+<h2 id="pregunta"></h2>
+
+<div id="opciones"></div>
+
+</div>
+
+<div id="victoria" class="pantalla oculto">
+<div class="mensaje">
+<h1>🏆 ¡NIVEL SUPERADO!</h1>
+<button onclick="continuarNivel()">➡️ Continuar</button>
+</div>
+</div>
+
+<div id="gameover" class="pantalla oculto">
+<div class="mensaje">
+<h1>😵 GAME OVER</h1>
+<button onclick="location.reload()">🔄 Reintentar</button>
+</div>
+</div>
+
+<script src="js/juegoo.js"></script>
+
+</body>
+</html>

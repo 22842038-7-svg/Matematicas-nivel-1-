@@ -1,45 +1,88 @@
+
 /* FONDO */
 body{
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
     text-align: center;
-    background: #f0f8ff;
+
+    /* FONDO NARANJO DIFUMINADO */
+    background: linear-gradient(
+        135deg,
+        #fff4e6,
+        #ffd6a5,
+        #ffb347
+    );
+
+    min-height: 100vh;
 }
 
 /* USUARIO */
 .usuario{
-    margin-top: 20px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    background: white;
+
+    padding: 5px 10px;
+
+    border-radius: 40px;
+
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.2);
 }
 
 .usuario img{
-    width: 120px;
-    height: 120px;
+    width: 40px;
+    height: 40px;
+
     border-radius: 50%;
-    border: 4px solid #4a90e2;
+
+    border: 3px solid #ff9800;
+
+    object-fit: cover;
 }
 
 .usuario h2{
-    color: #333;
+    color: #ff9800;
+
+    font-size: 15px;
+
+    margin: 0;
+
+    font-weight: bold;
 }
 
 /* HEADER */
 header{
-    background: #4a90e2;
+    background: linear-gradient(90deg, #ff9800, #ffb347);
+
     color: white;
+
     padding: 20px;
+
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
 }
 
 /* IMAGEN */
 .imagen-principal img{
     width: 300px;
+
     border-radius: 20px;
+
     margin-top: 20px;
+
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
 }
 
 /* CONTENEDOR */
 .contenedor{
     width: 80%;
+
     margin: 30px auto;
 
     display: grid;
@@ -51,26 +94,52 @@ header{
 
 /* TARJETAS */
 .tarjeta{
-    background: white;
+    background: linear-gradient(145deg, #ffffff, #ffe0b2);
 
-    padding: 20px;
+    padding: 25px;
 
-    font-size: 45px;
+    font-size: 55px;
 
-    border-radius: 20px;
+    border-radius: 25px;
 
     cursor: pointer;
 
-    transition: 0.3s;
+    transition: 0.4s;
 
-    box-shadow: 0px 5px 10px rgba(0,0,0,0.2);
+    box-shadow: 
+        0px 8px 15px rgba(0,0,0,0.2),
+        inset 0px 2px 5px rgba(255,255,255,0.8);
+
+    border: 3px solid #ff9800;
+
+    text-shadow: 
+        2px 2px 5px rgba(0,0,0,0.3);
+
+    animation: flotarTarjeta 2s infinite alternate;
 }
 
+/* EFECTO AL PASAR EL MOUSE */
 .tarjeta:hover{
+    transform: scale(1.15) rotate(3deg);
 
-    transform: scale(1.1);
+    background: linear-gradient(145deg, #ffd180, #ffb347);
 
-    background: #dff0ff;
+    box-shadow: 
+        0px 12px 20px rgba(0,0,0,0.3);
+
+    border-color: #ff6f00;
+}
+
+/* ANIMACIÓN TARJETAS */
+@keyframes flotarTarjeta{
+
+    0%{
+        transform: translateY(0px);
+    }
+
+    100%{
+        transform: translateY(-8px);
+    }
 }
 
 /* BOTÓN */
@@ -83,22 +152,32 @@ header{
 
     border-radius: 10px;
 
-    background: #4a90e2;
+    background: linear-gradient(90deg, #ff9800, #ffb347);
 
     color: white;
 
     cursor: pointer;
+
+    transition: 0.3s;
+
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
 }
 
 .boton:hover{
-    background: #357abd;
+    transform: scale(1.05);
+
+    background: linear-gradient(90deg, #f57c00, #ff9800);
 }
 
 /* MENSAJE */
 #mensaje{
     font-size: 25px;
+
     margin-top: 20px;
-    color: #333;
+
+    color: #5a3a00;
+
+    font-weight: bold;
 }
 
 /* NÚMERO FLOTANTE */
@@ -112,34 +191,61 @@ header{
 
     transform: translate(-50%, -50%);
 
-    font-size: 180px;
+    font-size: 220px;
 
     font-weight: bold;
 
-    color: red;
+    color: #ff6f00;
 
     opacity: 0;
 
     z-index: 99999;
 
     pointer-events: none;
+
+    /* BRILLO */
+    text-shadow:
+        0px 0px 10px #fff,
+        0px 0px 20px #ffd54f,
+        0px 0px 40px #ff9800,
+        4px 4px 10px rgba(0,0,0,0.4);
+
+    /* FONDO DIFUMINADO */
+    background: rgba(255,255,255,0.2);
+
+    padding: 20px 40px;
+
+    border-radius: 30px;
+
+    backdrop-filter: blur(5px);
 }
 
-/* ANIMACIÓN */
+/* ANIMACIÓN NÚMERO */
 .animar{
-
-    animation: flotar 2s linear;
+    animation: flotar 2s ease-out;
 }
 
 @keyframes flotar{
 
     0%{
+        opacity: 0;
+
+        transform: translate(-50%, -50%) scale(0.3) rotate(0deg);
+    }
+
+    20%{
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
+
+        transform: translate(-50%, -50%) scale(1.2) rotate(5deg);
+    }
+
+    40%{
+        transform: translate(-50%, -50%) scale(1) rotate(-5deg);
     }
 
     100%{
         opacity: 0;
-        transform: translate(-50%, -300%) scale(2);
+
+        transform: translate(-50%, -250%) scale(2) rotate(10deg);
     }
 }

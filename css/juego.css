@@ -1,0 +1,235 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    overflow-x:hidden;
+}
+
+/* Fondo */
+
+.imagen-fondo{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:-1;
+}
+
+/* Contenedor */
+
+.contenedor{
+    width:100%;
+    max-width:900px;
+    background:rgba(255,255,255,.92);
+    padding:25px;
+    border-radius:25px;
+    box-shadow:0 0 20px rgba(0,0,0,.3);
+}
+
+/* Perfil */
+
+.perfil{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+#avatarUsuario{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #3498db;
+}
+
+#nombreUsuario{
+    color:#2c3e50;
+}
+
+/* Vidas y estrellas */
+
+.panel{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+    font-size:24px;
+    font-weight:bold;
+}
+
+/* Barra progreso */
+
+.progreso{
+    width:100%;
+    height:25px;
+    background:#ddd;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:25px;
+}
+
+#barra{
+    width:0%;
+    height:100%;
+    background:linear-gradient(
+        90deg,
+        #2ecc71,
+        #27ae60
+    );
+    transition:.4s;
+}
+
+/* Títulos */
+
+h1{
+    text-align:center;
+    color:#2c3e50;
+    margin-bottom:15px;
+}
+
+#pregunta{
+    text-align:center;
+    font-size:42px;
+    margin-bottom:25px;
+    color:#34495e;
+}
+
+/* Opciones */
+
+#opciones{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+#opciones button{
+    padding:20px;
+    border:none;
+    border-radius:20px;
+    background:#3498db;
+    color:white;
+    font-size:28px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+#opciones button:hover{
+    transform:scale(1.05);
+}
+
+#opciones button:active{
+    transform:scale(.95);
+}
+
+/* Pantallas */
+
+.pantalla{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.85);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.oculto{
+    display:none;
+}
+
+.mensaje{
+    width:90%;
+    max-width:550px;
+    background:white;
+    padding:40px;
+    border-radius:25px;
+    text-align:center;
+    animation:entrada .5s;
+}
+
+.mensaje h1{
+    font-size:42px;
+    margin-bottom:20px;
+}
+
+.mensaje p{
+    font-size:22px;
+    margin-bottom:20px;
+}
+
+.mensaje button{
+    padding:15px 30px;
+    border:none;
+    border-radius:15px;
+    background:#27ae60;
+    color:white;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.mensaje button:hover{
+    transform:scale(1.05);
+}
+
+/* Animación */
+
+@keyframes entrada{
+
+    from{
+        opacity:0;
+        transform:scale(.5);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+
+/* Celulares */
+
+@media(max-width:768px){
+
+    .perfil{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    #avatarUsuario{
+        width:120px;
+        height:120px;
+    }
+
+    #pregunta{
+        font-size:32px;
+    }
+
+    #opciones{
+        grid-template-columns:1fr;
+    }
+
+    #opciones button{
+        font-size:24px;
+    }
+
+    .mensaje h1{
+        font-size:32px;
+    }
+
+}

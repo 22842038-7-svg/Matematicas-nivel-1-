@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Aprendiendo Matemática</title>
+
+<link rel="stylesheet" href="css/estilo_4basico.css">
+
+</head>
+
+<body>
+
+<img
+src="img/fondo.jpeg"
+class="imagen-fondo"
+>
+
+<audio autoplay loop>
+<source src="audio/musica.mp3">
+</audio>
+
+<div class="contenedor">
+
+    <div class="perfil">
+
+        <img
+        id="avatarUsuario"
+        src=""
+        alt="Avatar"
+        >
+
+        <div>
+
+            <h2 id="nombreUsuario"></h2>
+
+            <p>🎓 4° Básico</p>
+
+        </div>
+
+    </div>
+
+    <h1>
+        📚 Aprendamos Matemática
+    </h1>
+
+    <p class="intro">
+
+        Antes de jugar repasaremos las operaciones básicas.
+
+    </p>
+
+    <!-- SUMA -->
+
+    <div class="tarjeta">
+
+        <img src="img/suma.png">
+
+        <h2>➕ Suma</h2>
+
+        <p>
+            La suma sirve para juntar cantidades.
+        </p>
+
+        <h3>
+            3 + 2 = 5
+        </h3>
+
+        <button onclick="hablar('La suma sirve para juntar cantidades')">
+            🔊 Escuchar
+        </button>
+
+    </div>
+
+    <!-- RESTA -->
+
+    <div class="tarjeta">
+
+        <img src="img/resta.png">
+
+        <h2>➖ Resta</h2>
+
+        <p>
+            La resta sirve para quitar cantidades.
+        </p>
+
+        <h3>
+            8 - 3 = 5
+        </h3>
+
+        <button onclick="hablar('La resta sirve para quitar cantidades')">
+            🔊 Escuchar
+        </button>
+
+    </div>
+
+    <!-- MULTIPLICACIÓN -->
+
+    <div class="tarjeta">
+
+        <img src="img/multiplicacion.png">
+
+        <h2>✖️ Multiplicación</h2>
+
+        <p>
+            Es una suma repetida.
+        </p>
+
+        <h3>
+            3 × 4 = 12
+        </h3>
+
+        <button onclick="hablar('La multiplicación es una suma repetida')">
+            🔊 Escuchar
+        </button>
+
+    </div>
+
+    <!-- DIVISIÓN -->
+
+    <div class="tarjeta">
+
+        <img src="img/division.png">
+
+        <h2>➗ División</h2>
+
+        <p>
+            Sirve para repartir en partes iguales.
+        </p>
+
+        <h3>
+            12 ÷ 3 = 4
+        </h3>
+
+        <button onclick="hablar('La división sirve para repartir cantidades')">
+            🔊 Escuchar
+        </button>
+
+    </div>
+
+    <button
+    class="comenzar"
+    onclick="comenzarJuego()">
+
+        🚀 Comenzar Aventura Matemática
+
+    </button>
+
+</div>
+
+<script src="js/basico4.js"></script>
+
+</body>
+</html>

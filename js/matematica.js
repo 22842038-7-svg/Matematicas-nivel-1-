@@ -1,48 +1,141 @@
+// ===============================
+// NÚMEROS APRENDIDOS
+// ===============================
+let numerosAprendidos = [];
+
+
+// ===============================
+// BOTÓN OCULTO AL INICIO
+// ===============================
+document.querySelector(".boton").style.display =
+"none";
+
+
+// ===============================
+// FUNCIÓN REPRODUCIR NÚMERO
+// ===============================
 function reproducirNumero(numero){
 
-    // Mensaje
+    // MENSAJE
     document.getElementById("mensaje").innerHTML =
-    "¡Muy bien! Seleccionaste el número " + numero;
+    "🎉 ¡Muy bien! Seleccionaste el número " +
+    numero;
 
-    // Número flotante
+    // NÚMERO FLOTANTE
     const flotante =
     document.getElementById("numeroFlotante");
 
-    // Mostrar número
-    flotante.innerText = numero;
+    // MOSTRAR NÚMERO
+    flotante.innerText =
+    numero;
 
-    // Reiniciar animación
+    // REINICIAR ANIMACIÓN
     flotante.classList.remove("animar");
 
-    // Reinicio forzado
+    // FORZAR REINICIO
     void flotante.offsetWidth;
 
-    // Ejecutar animación
+    // EJECUTAR ANIMACIÓN
     flotante.classList.add("animar");
 
-    // Voz
+    // VOZ DEL NÚMERO
     let voz =
-    new SpeechSynthesisUtterance(numero.toString());
+    new SpeechSynthesisUtterance(
+        numero.toString()
+    );
 
     voz.lang = "es-ES";
 
     speechSynthesis.speak(voz);
+
+
+    // ==========================
+    // GUARDAR NÚMEROS APRENDIDOS
+    // ==========================
+    if(!numerosAprendidos.includes(numero)){
+
+        numerosAprendidos.push(numero);
+
+    }
+
+
+    // ==========================
+    // SI APRENDIÓ LOS 10
+    // ==========================
+    if(numerosAprendidos.length === 10){
+
+        // MOSTRAR BOTÓN
+        document.querySelector(".boton").style.display =
+        "inline-block";
+
+        // MENSAJE
+        document.getElementById("mensaje").innerHTML =
+        "🏆 ¡Excelente! Ya aprendiste todos los números. Presiona COMENZAR";
+
+        // VOZ FELICITACIÓN
+        let listo =
+        new SpeechSynthesisUtterance(
+            "Excelente. Ya aprendiste todos los números. Presiona comenzar"
+        );
+
+        listo.lang = "es-ES";
+
+        speechSynthesis.speak(listo);
+
+    }
+
 }
 
 
-// MENSAJE
+// ===============================
+// FUNCIÓN BOTÓN COMENZAR
+// ===============================
 function mostrarMensaje(){
 
+    // MENSAJE FINAL
     document.getElementById("mensaje").innerHTML =
-    "Haz clic en un número para escucharlo 🎵";
+    "🏆 ¡Felicidades! Aprendiste todos los números. Ahora vamos a jugar 🎮";
+
+    // VOZ FELICITACIÓN
+    let felicitacion =
+    new SpeechSynthesisUtterance(
+        "Felicitaciones. Aprendiste todos los números. Ahora vamos a jugar"
+    );
+
+    felicitacion.lang = "es-ES";
+
+    speechSynthesis.speak(felicitacion);
+
+    // CAMBIAR FONDO
+    document.body.style.background =
+    "linear-gradient(135deg, #fff176, #ffb300, #ff6f00)";
+
+
+    // ESPERAR 5 SEGUNDOS
+    setTimeout(() => {
+
+        // IR A LA PÁGINA DEL JUEGO
+        window.location.href =
+        "juego.html";
+
+    }, 5000);
+
 }
 
 
+// ===============================
 // DATOS DEL USUARIO
-let nombre = localStorage.getItem("nombre");
+// ===============================
+let nombre =
+localStorage.getItem("nombre");
 
-let avatar = localStorage.getItem("avatar");
+let avatar =
+localStorage.getItem("avatar");
 
+
+// ===============================
+// MOSTRAR DATOS
+// ===============================
 if(nombre && avatar){
 
     document.getElementById("nombreUsuario").textContent =
@@ -50,4 +143,5 @@ if(nombre && avatar){
 
     document.getElementById("avatarUsuario").src =
     avatar;
+
 }
