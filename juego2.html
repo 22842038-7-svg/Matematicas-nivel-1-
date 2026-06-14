@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juego 2 - Carrera de Dinosaurios</title>
+<title>Juego 2 - Carrera de Multiplicaciones</title>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
@@ -13,21 +13,21 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:'Comic Sans MS',sans-serif;
+font-family:Arial,sans-serif;
 }
 
 body{
-background:linear-gradient(135deg,#7ed957,#4caf50);
+background:linear-gradient(135deg,#66bb6a,#43a047);
 min-height:100vh;
 }
 
 .barra-superior{
-background:white;
-padding:15px 25px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-box-shadow:0 3px 10px rgba(0,0,0,.2);
+padding:15px 30px;
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,.2);
 }
 
 .usuario{
@@ -51,56 +51,55 @@ font-weight:bold;
 color:#ff9800;
 }
 
-.contenedor{
-padding:20px;
+.contenedor-juego{
 text-align:center;
+padding:30px;
 }
 
 h1{
 color:white;
 font-size:40px;
-text-shadow:2px 2px 5px black;
 margin-bottom:15px;
+text-shadow:2px 2px 5px black;
 }
 
 .instruccion{
-font-size:22px;
+font-size:20px;
 color:white;
 margin-bottom:20px;
 }
 
-.pista{
-width:90%;
-max-width:900px;
-height:140px;
-background:#fff;
+.escenario{
+width:700px;
+max-width:95%;
+height:120px;
 margin:auto;
+background:white;
 border-radius:20px;
 position:relative;
 overflow:hidden;
-margin-bottom:25px;
+margin-bottom:30px;
 }
 
-#dino{
-position:absolute;
-left:10px;
-top:25px;
+#cohete{
 font-size:70px;
-transition:1s;
+position:absolute;
+left:0;
+top:20px;
+transition:.3s;
 }
 
 .meta{
 position:absolute;
 right:20px;
 top:25px;
-font-size:70px;
+font-size:60px;
 }
 
 .pregunta{
-font-size:35px;
-color:white;
 margin:20px;
-font-weight:bold;
+font-size:28px;
+color:white;
 }
 
 .opciones{
@@ -119,8 +118,8 @@ display:flex;
 justify-content:center;
 align-items:center;
 font-size:40px;
-font-weight:bold;
 cursor:grab;
+font-weight:bold;
 box-shadow:0 4px 10px rgba(0,0,0,.3);
 transition:.3s;
 }
@@ -129,13 +128,18 @@ transition:.3s;
 transform:scale(1.1);
 }
 
+.zona-contenedor{
+display:flex;
+justify-content:center;
+margin-top:30px;
+}
+
 #zonaRespuesta{
 width:250px;
 height:120px;
 background:white;
 border:4px dashed #4caf50;
 border-radius:20px;
-margin:30px auto;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -144,21 +148,21 @@ font-weight:bold;
 }
 
 .correcto{
-color:#00ff99;
-font-size:30px;
+font-size:28px;
+color:#00ff66;
+margin-top:20px;
 font-weight:bold;
-margin-top:15px;
 }
 
 .incorrecto{
+font-size:28px;
 color:red;
-font-size:30px;
+margin-top:20px;
 font-weight:bold;
-margin-top:15px;
 }
 
 .botones{
-margin-top:25px;
+margin-top:30px;
 display:flex;
 justify-content:center;
 gap:15px;
@@ -167,13 +171,13 @@ flex-wrap:wrap;
 
 button{
 padding:15px 25px;
+font-size:18px;
 border:none;
 border-radius:15px;
-background:#2196f3;
-color:white;
-font-size:18px;
-font-weight:bold;
 cursor:pointer;
+background:#4caf50;
+color:white;
+font-weight:bold;
 transition:.3s;
 }
 
@@ -198,10 +202,6 @@ font-size:30px;
 width:200px;
 }
 
-h1{
-font-size:28px;
-}
-
 }
 
 </style>
@@ -221,36 +221,38 @@ font-size:28px;
 
 </header>
 
-<div class="contenedor">
+<div class="contenedor-juego">
 
-<h1>🦖 Carrera de Dinosaurios Multiplicadores</h1>
+<h1>🦖 Carrera de Multiplicaciones</h1>
 
 <p class="instruccion">
 Arrastra la respuesta correcta para ayudar al dinosaurio a llegar a la meta.
 </p>
 
-<div class="pista">
+<div class="escenario">
 
-<div id="dino">🦖</div>
+<div id="cohete">🦖</div>
 
 <div class="meta">🏁</div>
 
 </div>
 
 <div class="pregunta">
-<h2>Cargando multiplicación...</h2>
+<h2>2 × 3 = ?</h2>
 </div>
 
 <div class="opciones">
 
-<div class="respuesta" draggable="true"></div>
-<div class="respuesta" draggable="true"></div>
-<div class="respuesta" draggable="true"></div>
+<div class="respuesta" draggable="true">6</div>
+<div class="respuesta" draggable="true">8</div>
+<div class="respuesta" draggable="true">10</div>
 
 </div>
 
+<div class="zona-contenedor">
 <div id="zonaRespuesta">
 Suelta aquí
+</div>
 </div>
 
 <div id="mensaje"></div>
@@ -261,7 +263,7 @@ Suelta aquí
 🔄 Reiniciar
 </button>
 
-<button id="btnSiguiente" onclick="irSiguiente()" disabled>
+<button id="btnSiguiente" disabled onclick="irSiguiente()">
 ➡️ Siguiente Nivel
 </button>
 
@@ -287,19 +289,17 @@ const preguntas = [
 {a:4,b:2},
 {a:5,b:2},
 {a:3,b:4},
-{a:6,b:2},
-{a:7,b:2},
-{a:5,b:3},
 {a:4,b:4}
 ];
 
 let indice = 0;
 let correcta = 0;
-let posicionDino = 0;
+let posicionCohete = 0;
+let juegoTerminado = false;
 
 const zona = document.getElementById("zonaRespuesta");
 const mensaje = document.getElementById("mensaje");
-const dino = document.getElementById("dino");
+const cohete = document.getElementById("cohete");
 const puntosHTML = document.getElementById("puntos");
 
 let puntaje =
@@ -340,29 +340,7 @@ cargarPregunta();
 
 function cargarPregunta(){
 
-if(indice >= preguntas.length){
-
-mensaje.innerHTML =
-"🏆 ¡Completaste todas las multiplicaciones!";
-
-mensaje.className =
-"correcto";
-
-confetti({
-particleCount:300,
-spread:120
-});
-
-document.getElementById(
-"audioFelicitacion"
-).play();
-
-document.getElementById(
-"btnSiguiente"
-).disabled = false;
-
-return;
-}
+if(juegoTerminado) return;
 
 let p = preguntas[indice];
 
@@ -425,14 +403,14 @@ validar(valor);
 
 function validar(valor){
 
+if(juegoTerminado) return;
+
 if(parseInt(valor)===correcta){
 
-document.getElementById(
-"audioCorrecto"
-).play();
+document.getElementById("audioCorrecto").play();
 
 mensaje.innerHTML =
-"🎉 ¡Muy Bien!";
+"🎉 ¡Correcto!";
 
 mensaje.className =
 "correcto";
@@ -447,15 +425,42 @@ puntaje
 puntosHTML.textContent =
 puntaje;
 
-posicionDino += 70;
+posicionCohete += 140;
 
-dino.style.left =
-posicionDino + "px";
+cohete.style.left =
+posicionCohete + "px";
 
 confetti({
 particleCount:120,
 spread:90
 });
+
+if(posicionCohete >= 650){
+
+juegoTerminado = true;
+
+mensaje.innerHTML =
+"🏆 ¡FELICITACIONES! El dinosaurio llegó a la meta 🦖🏁";
+
+mensaje.className =
+"correcto";
+
+confetti({
+particleCount:300,
+spread:120
+});
+
+document.getElementById(
+"audioFelicitacion"
+).play();
+
+document.getElementById(
+"btnSiguiente"
+).disabled = false;
+
+return;
+
+}
 
 indice++;
 
@@ -474,19 +479,10 @@ document.getElementById(
 ).play();
 
 mensaje.innerHTML =
-"❌ Incorrecto";
+"❌ Incorrecto. Intenta nuevamente";
 
 mensaje.className =
 "incorrecto";
-
-posicionDino -= 35;
-
-if(posicionDino < 0){
-posicionDino = 0;
-}
-
-dino.style.left =
-posicionDino + "px";
 
 }
 
@@ -494,7 +490,20 @@ posicionDino + "px";
 
 function reiniciarJuego(){
 
-location.reload();
+juegoTerminado = false;
+indice = 0;
+correcta = 0;
+posicionCohete = 0;
+
+cohete.style.left = "0px";
+
+mensaje.innerHTML = "";
+
+document.getElementById(
+"btnSiguiente"
+).disabled = true;
+
+cargarPregunta();
 
 }
 
