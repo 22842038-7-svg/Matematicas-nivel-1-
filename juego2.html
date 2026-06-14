@@ -3,74 +3,509 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Juego 2 - Memoria Matemática</title>
-
-<link rel="stylesheet" href="css/juego2.css">
-
-</head>
-<body>
-
-<img src="img/fondo.jpeg" class="imagen-fondo">
-
-<audio autoplay loop>
-    <source src="audio/musica.mp3">
-</audio>
-
-<audio id="correcto">
-    <source src="audio/correcto.mp3">
-</audio>
-
-<audio id="error">
-    <source src="audio/error.mp3">
-</audio>
-
-<div class="contenedor">
-
-    <div class="perfil">
-
-        <img id="avatarUsuario" src="">
-
-        <div>
-            <h2 id="nombreUsuario"></h2>
-            <p>🎓 4° Básico</p>
-        </div>
-
-    </div>
-
-    <h1>🧠 Juego 2: Memoria Matemática</h1>
-
-    <div class="panel">
-
-        ❤️ <span id="vidas">3</span>
-
-        ⭐ <span id="pares">0</span>/4
-
-    </div>
-
-    <div class="tablero" id="tablero"></div>
-
-</div>
-
-<div id="victoria" class="pantalla oculto">
-
-    <div class="mensaje">
-
-        <h1>🏆 ¡Excelente!</h1>
-
-        <p>Completaste la memoria matemática.</p>
-
-        <button onclick="siguienteNivel()">
-            ➡️ Juego 3
-        </button>
-
-    </div>
-
-</div>
+<title>Juego 2 - Carrera de Dinosaurios</title>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
-<script src="js/juego2.js"></script>
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Comic Sans MS',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#7ed957,#4caf50);
+min-height:100vh;
+}
+
+.barra-superior{
+background:white;
+padding:15px 25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 3px 10px rgba(0,0,0,.2);
+}
+
+.usuario{
+display:flex;
+align-items:center;
+gap:10px;
+font-weight:bold;
+font-size:18px;
+}
+
+.usuario img{
+width:60px;
+height:60px;
+border-radius:50%;
+border:3px solid orange;
+}
+
+.puntaje{
+font-size:28px;
+font-weight:bold;
+color:#ff9800;
+}
+
+.contenedor{
+padding:20px;
+text-align:center;
+}
+
+h1{
+color:white;
+font-size:40px;
+text-shadow:2px 2px 5px black;
+margin-bottom:15px;
+}
+
+.instruccion{
+font-size:22px;
+color:white;
+margin-bottom:20px;
+}
+
+.pista{
+width:90%;
+max-width:900px;
+height:140px;
+background:#fff;
+margin:auto;
+border-radius:20px;
+position:relative;
+overflow:hidden;
+margin-bottom:25px;
+}
+
+#dino{
+position:absolute;
+left:10px;
+top:25px;
+font-size:70px;
+transition:1s;
+}
+
+.meta{
+position:absolute;
+right:20px;
+top:25px;
+font-size:70px;
+}
+
+.pregunta{
+font-size:35px;
+color:white;
+margin:20px;
+font-weight:bold;
+}
+
+.opciones{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.respuesta{
+width:120px;
+height:120px;
+background:#ffeb3b;
+border-radius:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:40px;
+font-weight:bold;
+cursor:grab;
+box-shadow:0 4px 10px rgba(0,0,0,.3);
+transition:.3s;
+}
+
+.respuesta:hover{
+transform:scale(1.1);
+}
+
+#zonaRespuesta{
+width:250px;
+height:120px;
+background:white;
+border:4px dashed #4caf50;
+border-radius:20px;
+margin:30px auto;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:25px;
+font-weight:bold;
+}
+
+.correcto{
+color:#00ff99;
+font-size:30px;
+font-weight:bold;
+margin-top:15px;
+}
+
+.incorrecto{
+color:red;
+font-size:30px;
+font-weight:bold;
+margin-top:15px;
+}
+
+.botones{
+margin-top:25px;
+display:flex;
+justify-content:center;
+gap:15px;
+flex-wrap:wrap;
+}
+
+button{
+padding:15px 25px;
+border:none;
+border-radius:15px;
+background:#2196f3;
+color:white;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+transform:scale(1.08);
+}
+
+#btnSiguiente:disabled{
+background:gray;
+cursor:not-allowed;
+}
+
+@media(max-width:768px){
+
+.respuesta{
+width:90px;
+height:90px;
+font-size:30px;
+}
+
+#zonaRespuesta{
+width:200px;
+}
+
+h1{
+font-size:28px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<header class="barra-superior">
+
+<div class="usuario">
+<img id="avatarUsuario" src="img/avatar.png">
+<span id="nombreUsuario">Estudiante</span>
+</div>
+
+<div class="puntaje">
+⭐ <span id="puntos">0</span>
+</div>
+
+</header>
+
+<div class="contenedor">
+
+<h1>🦖 Carrera de Dinosaurios Multiplicadores</h1>
+
+<p class="instruccion">
+Arrastra la respuesta correcta para ayudar al dinosaurio a llegar a la meta.
+</p>
+
+<div class="pista">
+
+<div id="dino">🦖</div>
+
+<div class="meta">🏁</div>
+
+</div>
+
+<div class="pregunta">
+<h2>Cargando multiplicación...</h2>
+</div>
+
+<div class="opciones">
+
+<div class="respuesta" draggable="true"></div>
+<div class="respuesta" draggable="true"></div>
+<div class="respuesta" draggable="true"></div>
+
+</div>
+
+<div id="zonaRespuesta">
+Suelta aquí
+</div>
+
+<div id="mensaje"></div>
+
+<div class="botones">
+
+<button onclick="reiniciarJuego()">
+🔄 Reiniciar
+</button>
+
+<button id="btnSiguiente" onclick="irSiguiente()" disabled>
+➡️ Siguiente Nivel
+</button>
+
+<a href="todos.html">
+<button type="button">
+🏠 Inicio
+</button>
+</a>
+
+</div>
+
+</div>
+
+<audio id="audioCorrecto" src="audio/correcto.mp3"></audio>
+<audio id="audioError" src="audio/error.mp3"></audio>
+<audio id="audioNumero" src="audio/numero.mp3"></audio>
+<audio id="audioFelicitacion" src="audio/felicitaciones.mp3"></audio>
+
+<script>
+
+const preguntas = [
+{a:2,b:3},
+{a:4,b:2},
+{a:5,b:2},
+{a:3,b:4},
+{a:6,b:2},
+{a:7,b:2},
+{a:5,b:3},
+{a:4,b:4}
+];
+
+let indice = 0;
+let correcta = 0;
+let posicionDino = 0;
+
+const zona = document.getElementById("zonaRespuesta");
+const mensaje = document.getElementById("mensaje");
+const dino = document.getElementById("dino");
+const puntosHTML = document.getElementById("puntos");
+
+let puntaje =
+parseInt(localStorage.getItem("puntaje")) || 0;
+
+puntosHTML.textContent = puntaje;
+
+window.onload = () => {
+
+let nombre =
+localStorage.getItem("nombre") || "Estudiante";
+
+let avatar =
+localStorage.getItem("avatar") || "img/avatar.png";
+
+document.getElementById("nombreUsuario").textContent = nombre;
+document.getElementById("avatarUsuario").src = avatar;
+
+document.querySelectorAll(".respuesta").forEach(item=>{
+
+item.addEventListener("click",()=>{
+
+let audio =
+document.getElementById("audioNumero");
+
+audio.currentTime = 0;
+audio.play();
+
+});
+
+item.addEventListener("dragstart",dragStart);
+
+});
+
+cargarPregunta();
+
+};
+
+function cargarPregunta(){
+
+if(indice >= preguntas.length){
+
+mensaje.innerHTML =
+"🏆 ¡Completaste todas las multiplicaciones!";
+
+mensaje.className =
+"correcto";
+
+confetti({
+particleCount:300,
+spread:120
+});
+
+document.getElementById(
+"audioFelicitacion"
+).play();
+
+document.getElementById(
+"btnSiguiente"
+).disabled = false;
+
+return;
+}
+
+let p = preguntas[indice];
+
+correcta = p.a * p.b;
+
+document.querySelector(".pregunta h2").innerHTML =
+`${p.a} × ${p.b} = ?`;
+
+let respuestas = [correcta];
+
+while(respuestas.length < 3){
+
+let falsa =
+correcta + Math.floor(Math.random()*8)-4;
+
+if(
+falsa > 0 &&
+!respuestas.includes(falsa)
+){
+respuestas.push(falsa);
+}
+
+}
+
+respuestas.sort(()=>Math.random()-0.5);
+
+document.querySelectorAll(".respuesta")
+.forEach((caja,i)=>{
+
+caja.innerHTML = respuestas[i];
+caja.dataset.valor = respuestas[i];
+
+});
+
+}
+
+function dragStart(e){
+
+e.dataTransfer.setData(
+"text",
+e.target.dataset.valor
+);
+
+}
+
+zona.addEventListener("dragover",e=>{
+e.preventDefault();
+});
+
+zona.addEventListener("drop",e=>{
+
+e.preventDefault();
+
+let valor =
+e.dataTransfer.getData("text");
+
+validar(valor);
+
+});
+
+function validar(valor){
+
+if(parseInt(valor)===correcta){
+
+document.getElementById(
+"audioCorrecto"
+).play();
+
+mensaje.innerHTML =
+"🎉 ¡Muy Bien!";
+
+mensaje.className =
+"correcto";
+
+puntaje += 10;
+
+localStorage.setItem(
+"puntaje",
+puntaje
+);
+
+puntosHTML.textContent =
+puntaje;
+
+posicionDino += 70;
+
+dino.style.left =
+posicionDino + "px";
+
+confetti({
+particleCount:120,
+spread:90
+});
+
+indice++;
+
+setTimeout(()=>{
+
+mensaje.innerHTML = "";
+
+cargarPregunta();
+
+},1000);
+
+}else{
+
+document.getElementById(
+"audioError"
+).play();
+
+mensaje.innerHTML =
+"❌ Incorrecto";
+
+mensaje.className =
+"incorrecto";
+
+posicionDino -= 35;
+
+if(posicionDino < 0){
+posicionDino = 0;
+}
+
+dino.style.left =
+posicionDino + "px";
+
+}
+
+}
+
+function reiniciarJuego(){
+
+location.reload();
+
+}
+
+function irSiguiente(){
+
+window.location.href =
+"juego3.html";
+
+}
+
+</script>
 
 </body>
 </html>
