@@ -1,299 +1,18 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juego 1 - Carrera Espacial de Sumas</title>
-
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
-body{
-background:linear-gradient(135deg,#74ebd5,#9face6);
-min-height:100vh;
-}
-
-.barra-superior{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 30px;
-background:white;
-box-shadow:0 2px 10px rgba(0,0,0,.2);
-}
-
-.usuario{
-display:flex;
-align-items:center;
-gap:10px;
-font-weight:bold;
-font-size:18px;
-}
-
-.usuario img{
-width:60px;
-height:60px;
-border-radius:50%;
-border:3px solid orange;
-}
-
-.puntaje{
-font-size:28px;
-font-weight:bold;
-color:#ff9800;
-}
-
-.contenedor-juego{
-text-align:center;
-padding:30px;
-}
-
-h1{
-color:white;
-font-size:40px;
-margin-bottom:15px;
-text-shadow:2px 2px 5px black;
-}
-
-.instruccion{
-font-size:20px;
-color:white;
-margin-bottom:20px;
-}
-
-.escenario{
-width:700px;
-max-width:95%;
-height:120px;
-margin:auto;
-background:white;
-border-radius:20px;
-position:relative;
-overflow:hidden;
-margin-bottom:30px;
-}
-
-#cohete{
-font-size:70px;
-position:absolute;
-left:0;
-top:20px;
-transition:1s;
-}
-
-.meta{
-position:absolute;
-right:20px;
-top:30px;
-font-size:60px;
-}
-
-.pregunta{
-margin:20px;
-font-size:28px;
-color:white;
-}
-
-.opciones{
-display:flex;
-justify-content:center;
-gap:20px;
-flex-wrap:wrap;
-}
-
-.respuesta{
-width:120px;
-height:120px;
-background:#ffeb3b;
-border-radius:20px;
-display:flex;
-justify-content:center;
-align-items:center;
-font-size:40px;
-cursor:grab;
-font-weight:bold;
-box-shadow:0 4px 10px rgba(0,0,0,.3);
-transition:.3s;
-}
-
-.respuesta:hover{
-transform:scale(1.1);
-}
-
-.zona-contenedor{
-display:flex;
-justify-content:center;
-margin-top:30px;
-}
-
-#zonaRespuesta{
-width:250px;
-height:120px;
-background:white;
-border:4px dashed #4caf50;
-border-radius:20px;
-display:flex;
-justify-content:center;
-align-items:center;
-font-size:25px;
-font-weight:bold;
-}
-
-.correcto{
-font-size:28px;
-color:#00ff66;
-margin-top:20px;
-font-weight:bold;
-}
-
-.incorrecto{
-font-size:28px;
-color:red;
-margin-top:20px;
-font-weight:bold;
-}
-
-.botones{
-margin-top:30px;
-display:flex;
-justify-content:center;
-gap:15px;
-flex-wrap:wrap;
-}
-
-button{
-padding:15px 25px;
-font-size:18px;
-border:none;
-border-radius:15px;
-cursor:pointer;
-background:#4caf50;
-color:white;
-font-weight:bold;
-transition:.3s;
-}
-
-button:hover{
-transform:scale(1.08);
-}
-
-#btnSiguiente:disabled{
-background:gray;
-cursor:not-allowed;
-}
-
-@media(max-width:768px){
-
-.respuesta{
-width:90px;
-height:90px;
-font-size:30px;
-}
-
-#zonaRespuesta{
-width:200px;
-}
-
-}
-
-</style>
-
-</head>
-<body>
-
-<header class="barra-superior">
-
-<div class="usuario">
-<img id="avatarUsuario" src="img/avatar.png">
-<span id="nombreUsuario">Estudiante</span>
-</div>
-
-<div class="puntaje">
-⭐ <span id="puntos">0</span>
-</div>
-
-</header>
-
-<div class="contenedor-juego">
-
-<h1>🚀 Carrera Espacial de Sumas</h1>
-
-<p class="instruccion">
-Arrastra la respuesta correcta para que el cohete avance.
-</p>
-
-<div class="escenario">
-
-<div id="cohete">🚀</div>
-
-<div class="meta">🌎</div>
-
-</div>
-
-<div class="pregunta">
-<h2>5 + 3 = ?</h2>
-</div>
-
-<div class="opciones">
-
-<div class="respuesta" draggable="true" data-valor="8">
-8
-</div>
-
-<div class="respuesta" draggable="true" data-valor="6">
-6
-</div>
-
-<div class="respuesta" draggable="true" data-valor="10">
-10
-</div>
-
-</div>
-
-<div class="zona-contenedor">
-<div id="zonaRespuesta">
-Suelta aquí
-</div>
-</div>
-
-<div id="mensaje"></div>
-
-<div class="botones">
-
-<button onclick="reiniciarJuego()">
-🔄 Reiniciar
-</button>
-
-<button id="btnSiguiente" disabled onclick="irSiguiente()">
-➡️ Siguiente Nivel
-</button>
-
-<a href="todos.html">
-<button type="button">
-🏠 Inicio
-</button>
-</a>
-
-</div>
-
-</div>
-
-<audio id="audioCorrecto" src="audio/correcto.mp3"></audio>
-<audio id="audioError" src="audio/error.mp3"></audio>
-<audio id="audioNumero" src="audio/numero.mp3"></audio>
-<audio id="audioFelicitacion" src="audio/felicitaciones.mp3"></audio>
-
 <script>
 
-let correcta = 8;
+const preguntas = [
+{a:5,b:3},
+{a:7,b:2},
+{a:4,b:5},
+{a:6,b:3},
+{a:8,b:1},
+{a:9,b:4},
+{a:10,b:5},
+{a:12,b:3}
+];
+
+let indice = 0;
+let correcta = 0;
 let posicionCohete = 0;
 
 const zona = document.getElementById("zonaRespuesta");
@@ -321,8 +40,10 @@ document.querySelectorAll(".respuesta").forEach(item=>{
 
 item.addEventListener("click",()=>{
 
-let audio=document.getElementById("audioNumero");
-audio.currentTime=0;
+let audio =
+document.getElementById("audioNumero");
+
+audio.currentTime = 0;
 audio.play();
 
 });
@@ -331,7 +52,78 @@ item.addEventListener("dragstart",dragStart);
 
 });
 
+cargarPregunta();
+
 };
+
+function cargarPregunta(){
+
+if(indice >= preguntas.length){
+
+mensaje.innerHTML =
+"🏆 ¡Completaste todas las sumas!";
+
+mensaje.className =
+"correcto";
+
+confetti({
+particleCount:300,
+spread:120
+});
+
+document.getElementById(
+"audioFelicitacion"
+).play();
+
+document.getElementById(
+"btnSiguiente"
+).disabled = false;
+
+return;
+}
+
+let p = preguntas[indice];
+
+correcta = p.a + p.b;
+
+document.querySelector(
+".pregunta h2"
+).innerHTML =
+`${p.a} + ${p.b} = ?`;
+
+let respuestas = [correcta];
+
+while(respuestas.length < 3){
+
+let falsa =
+correcta + Math.floor(Math.random()*6)-3;
+
+if(
+falsa > 0 &&
+!respuestas.includes(falsa)
+){
+respuestas.push(falsa);
+}
+
+}
+
+respuestas.sort(
+()=>Math.random()-0.5
+);
+
+document.querySelectorAll(
+".respuesta"
+).forEach((caja,i)=>{
+
+caja.innerHTML =
+respuestas[i];
+
+caja.dataset.valor =
+respuestas[i];
+
+});
+
+}
 
 function dragStart(e){
 
@@ -363,7 +155,9 @@ function validar(valor){
 
 if(parseInt(valor)===correcta){
 
-document.getElementById("audioCorrecto").play();
+document.getElementById(
+"audioCorrecto"
+).play();
 
 mensaje.innerHTML =
 "🎉 ¡Correcto!";
@@ -381,23 +175,25 @@ puntaje
 puntosHTML.textContent =
 puntaje;
 
-posicionCohete += 180;
+posicionCohete += 50;
 
 cohete.style.left =
 posicionCohete + "px";
 
 confetti({
-particleCount:150,
+particleCount:120,
 spread:90
 });
 
-document.getElementById(
-"audioFelicitacion"
-).play();
+indice++;
 
-document.getElementById(
-"btnSiguiente"
-).disabled = false;
+setTimeout(()=>{
+
+mensaje.innerHTML = "";
+
+cargarPregunta();
+
+},1000);
 
 }else{
 
@@ -411,10 +207,10 @@ mensaje.innerHTML =
 mensaje.className =
 "incorrecto";
 
-posicionCohete -= 60;
+posicionCohete -= 30;
 
-if(posicionCohete<0){
-posicionCohete=0;
+if(posicionCohete < 0){
+posicionCohete = 0;
 }
 
 cohete.style.left =
@@ -426,7 +222,14 @@ posicionCohete + "px";
 
 function reiniciarJuego(){
 
-location.reload();
+indice = 0;
+posicionCohete = 0;
+
+cohete.style.left = "0px";
+
+mensaje.innerHTML = "";
+
+cargarPregunta();
 
 }
 
@@ -438,6 +241,3 @@ window.location.href =
 }
 
 </script>
-
-</body>
-</html>
