@@ -86,9 +86,8 @@ font-size:70px;
 position:absolute;
 left:0;
 top:20px;
-transition:1s;
+transition:.3s;
 }
-
 .meta{
 position:absolute;
 right:20px;
@@ -298,12 +297,8 @@ const preguntas = [
 {a:7,b:2},
 {a:4,b:5},
 {a:6,b:3},
-{a:8,b:1},
-{a:9,b:4},
-{a:10,b:5},
-{a:12,b:3}
+{a:8,b:1}
 ];
-
 let indice = 0;
 let correcta = 0;
 let posicionCohete = 0;
@@ -468,7 +463,7 @@ puntaje
 puntosHTML.textContent =
 puntaje;
 
-posicionCohete += 50;
+  posicionCohete += 130;
 
 cohete.style.left =
 posicionCohete + "px";
