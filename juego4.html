@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juego 3 - Aventura de Divisiones</title>
+<title>Juego 4 - Atrapa el número</title>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
@@ -17,7 +17,7 @@ font-family:Arial,sans-serif;
 }
 
 body{
-background:linear-gradient(135deg,#ffb74d,#ff9800);
+background:linear-gradient(135deg,#42a5f5,#1e88e5);
 min-height:100vh;
 }
 
@@ -25,7 +25,7 @@ min-height:100vh;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:15px 30px;
+padding:15px 25px;
 background:white;
 box-shadow:0 2px 10px rgba(0,0,0,.2);
 }
@@ -35,7 +35,6 @@ display:flex;
 align-items:center;
 gap:10px;
 font-weight:bold;
-font-size:18px;
 }
 
 .usuario img{
@@ -51,55 +50,28 @@ font-weight:bold;
 color:#ff9800;
 }
 
-.contenedor-juego{
+.contenedor{
 text-align:center;
-padding:30px;
+padding:20px;
 }
 
 h1{
 color:white;
 font-size:40px;
-margin-bottom:15px;
+margin-bottom:10px;
 text-shadow:2px 2px 5px black;
 }
 
 .instruccion{
-font-size:20px;
 color:white;
+font-size:20px;
 margin-bottom:20px;
 }
 
-.escenario{
-width:700px;
-max-width:95%;
-height:120px;
-margin:auto;
-background:white;
-border-radius:20px;
-position:relative;
-overflow:hidden;
-margin-bottom:30px;
-}
-
-#mono{
-font-size:70px;
-position:absolute;
-left:0;
-top:20px;
-transition:.3s;
-}
-
-.meta{
-position:absolute;
-right:20px;
-top:20px;
-font-size:60px;
-}
-
 .pregunta{
-margin:20px;
-font-size:28px;
+font-size:35px;
 color:white;
+margin:20px;
 }
 
 .opciones{
@@ -109,70 +81,49 @@ gap:20px;
 flex-wrap:wrap;
 }
 
-.respuesta{
+.opcion{
 width:120px;
 height:120px;
 background:#ffeb3b;
 border-radius:20px;
 display:flex;
-justify-content:center;
 align-items:center;
+justify-content:center;
 font-size:40px;
 font-weight:bold;
-cursor:grab;
+cursor:pointer;
 box-shadow:0 4px 10px rgba(0,0,0,.3);
-transition:.3s;
+transition:.2s;
 }
 
-.respuesta:hover{
+.opcion:hover{
 transform:scale(1.1);
 }
 
-#zonaRespuesta{
-width:250px;
-height:120px;
-background:white;
-border:4px dashed #4caf50;
-border-radius:20px;
-margin:30px auto;
-display:flex;
-justify-content:center;
-align-items:center;
-font-size:25px;
-font-weight:bold;
-}
-
 .correcto{
-font-size:28px;
 color:#00ff66;
+font-size:28px;
+margin-top:15px;
 font-weight:bold;
-margin-top:20px;
 }
 
 .incorrecto{
-font-size:28px;
 color:red;
+font-size:28px;
+margin-top:15px;
 font-weight:bold;
-margin-top:20px;
-}
-
-.botones{
-margin-top:30px;
-display:flex;
-justify-content:center;
-gap:15px;
-flex-wrap:wrap;
 }
 
 button{
-padding:15px 25px;
-font-size:18px;
+padding:12px 20px;
 border:none;
-border-radius:15px;
-cursor:pointer;
+border-radius:12px;
 background:#4caf50;
 color:white;
+font-size:16px;
 font-weight:bold;
+cursor:pointer;
+margin:10px;
 }
 
 button:hover{
@@ -181,7 +132,6 @@ transform:scale(1.05);
 
 #btnSiguiente:disabled{
 background:gray;
-cursor:not-allowed;
 }
 
 </style>
@@ -201,114 +151,60 @@ cursor:not-allowed;
 
 </header>
 
-<div class="contenedor-juego">
+<div class="contenedor">
 
-<h1>🐵 Aventura de Divisiones</h1>
+<h1>🎯 Atrapa el número correcto</h1>
 
 <p class="instruccion">
-Arrastra la respuesta correcta para ayudar al mono a conseguir las bananas.
+Haz clic en el resultado correcto lo más rápido posible.
 </p>
 
-<div class="escenario">
-
-<div id="mono">🐵</div>
-
-<div class="meta">🍌</div>
-
-</div>
-
 <div class="pregunta">
-<h2>Cargando división...</h2>
+<h2 id="pregunta">Cargando...</h2>
 </div>
 
-<div class="opciones">
-<div class="respuesta" draggable="true"></div>
-<div class="respuesta" draggable="true"></div>
-<div class="respuesta" draggable="true"></div>
-</div>
-
-<div id="zonaRespuesta">
-Suelta aquí
-</div>
+<div class="opciones" id="opciones"></div>
 
 <div id="mensaje"></div>
 
-<div class="botones">
-
-<button onclick="reiniciarJuego()">
-🔄 Reiniciar
-</button>
+<button onclick="reiniciarJuego()">🔄 Reiniciar</button>
 
 <button id="btnSiguiente" disabled onclick="irSiguiente()">
 ➡️ Siguiente Nivel
 </button>
 
 <a href="todos.html">
-<button type="button">
-🏠 Inicio
-</button>
+<button>🏠 Inicio</button>
 </a>
-
-</div>
 
 </div>
 
 <audio id="audioCorrecto" src="audio/correcto.mp3"></audio>
 <audio id="audioError" src="audio/error.mp3"></audio>
-<audio id="audioNumero" src="audio/numero.mp3"></audio>
 <audio id="audioFelicitacion" src="audio/felicitaciones.mp3"></audio>
 
 <script>
 
-const preguntas = [
-{a:12,b:3},
-{a:16,b:4},
-{a:20,b:5},
-{a:18,b:3},
-{a:24,b:4}
+let preguntas = [
+{txt:"6 + 4", res:10},
+{txt:"8 + 3", res:11},
+{txt:"9 - 2", res:7},
+{txt:"5 × 2", res:10},
+{txt:"12 ÷ 3", res:4}
 ];
 
 let indice = 0;
-let correcta = 0;
-let posicionMono = 0;
-let juegoTerminado = false;
+let puntaje = parseInt(localStorage.getItem("puntaje")) || 0;
 
-const zona = document.getElementById("zonaRespuesta");
-const mensaje = document.getElementById("mensaje");
-const mono = document.getElementById("mono");
-const puntosHTML = document.getElementById("puntos");
-
-let puntaje =
-parseInt(localStorage.getItem("puntaje")) || 0;
-
-puntosHTML.textContent = puntaje;
+document.getElementById("puntos").textContent = puntaje;
 
 window.onload = () => {
 
-let nombre =
-localStorage.getItem("nombre") || "Estudiante";
-
-let avatar =
-localStorage.getItem("avatar") || "img/avatar.png";
+let nombre = localStorage.getItem("nombre") || "Estudiante";
+let avatar = localStorage.getItem("avatar") || "img/avatar.png";
 
 document.getElementById("nombreUsuario").textContent = nombre;
 document.getElementById("avatarUsuario").src = avatar;
-
-document.querySelectorAll(".respuesta").forEach(item=>{
-
-item.addEventListener("click",()=>{
-
-let audio =
-document.getElementById("audioNumero");
-
-audio.currentTime = 0;
-audio.play();
-
-});
-
-item.addEventListener("dragstart",dragStart);
-
-});
 
 cargarPregunta();
 
@@ -316,149 +212,88 @@ cargarPregunta();
 
 function cargarPregunta(){
 
-if(juegoTerminado) return;
+if(indice >= preguntas.length){
 
-let p = preguntas[indice];
+document.getElementById("pregunta").innerHTML =
+"🏆 ¡Juego completado!";
 
-correcta = p.a / p.b;
-
-document.querySelector(".pregunta h2").innerHTML =
-`${p.a} ÷ ${p.b} = ?`;
-
-let respuestas = [correcta];
-
-while(respuestas.length < 3){
-
-let falsa =
-correcta + Math.floor(Math.random()*5)-2;
-
-if(
-falsa > 0 &&
-!respuestas.includes(falsa)
-){
-respuestas.push(falsa);
-}
-
-}
-
-respuestas.sort(()=>Math.random()-0.5);
-
-document.querySelectorAll(".respuesta")
-.forEach((caja,i)=>{
-
-caja.innerHTML = respuestas[i];
-caja.dataset.valor = respuestas[i];
-
-});
-
-}
-
-function dragStart(e){
-
-e.dataTransfer.setData(
-"text",
-e.target.dataset.valor
-);
-
-}
-
-zona.addEventListener("dragover",e=>{
-e.preventDefault();
-});
-
-zona.addEventListener("drop",e=>{
-
-e.preventDefault();
-
-let valor =
-e.dataTransfer.getData("text");
-
-validar(valor);
-
-});
-
-function validar(valor){
-
-if(juegoTerminado) return;
-
-if(parseInt(valor)===correcta){
-
-document.getElementById("audioCorrecto").play();
-
-mensaje.innerHTML =
-"🎉 ¡Correcto!";
-
-mensaje.className =
-"correcto";
-
-puntaje += 10;
-
-localStorage.setItem(
-"puntaje",
-puntaje
-);
-
-puntosHTML.textContent =
-puntaje;
-
-posicionMono += 140;
-
-mono.style.left =
-posicionMono + "px";
-
-confetti({
-particleCount:120,
-spread:90
-});
-
-if(posicionMono >= 650){
-
-juegoTerminado = true;
-
-mensaje.innerHTML =
-"🏆 ¡FELICITACIONES! El mono consiguió todas las bananas 🍌🐵";
-
-mensaje.className =
-"correcto";
+document.getElementById("mensaje").innerHTML =
+"¡Excelente trabajo!";
 
 confetti({
 particleCount:300,
 spread:120
 });
 
-document.getElementById(
-"audioFelicitacion"
-).play();
+document.getElementById("audioFelicitacion").play();
 
-document.getElementById(
-"btnSiguiente"
-).disabled = false;
+document.getElementById("btnSiguiente").disabled = false;
 
 return;
+}
+
+let p = preguntas[indice];
+
+document.getElementById("pregunta").innerHTML = p.txt;
+
+let opciones = [p.res];
+
+while(opciones.length < 3){
+let fake = p.res + Math.floor(Math.random()*10)-5;
+if(!opciones.includes(fake) && fake >= 0){
+opciones.push(fake);
+}
+}
+
+opciones.sort(()=>Math.random()-0.5);
+
+let cont = document.getElementById("opciones");
+cont.innerHTML = "";
+
+opciones.forEach(num=>{
+
+let div = document.createElement("div");
+div.className = "opcion";
+div.innerText = num;
+
+div.onclick = () => validar(num);
+
+cont.appendChild(div);
+
+});
 
 }
 
+function validar(num){
+
+if(num === preguntas[indice].res){
+
+document.getElementById("audioCorrecto").play();
+
+puntaje += 10;
+localStorage.setItem("puntaje",puntaje);
+document.getElementById("puntos").textContent = puntaje;
+
+document.getElementById("mensaje").innerHTML =
+"🎉 ¡Correcto!";
+
+confetti({
+particleCount:120,
+spread:80
+});
+
 indice++;
-
 setTimeout(()=>{
-
-mensaje.innerHTML = "";
-
 cargarPregunta();
-
+document.getElementById("mensaje").innerHTML = "";
 },1000);
 
 }else{
 
-document.getElementById(
-"audioError"
-).play();
+document.getElementById("audioError").play();
 
-mensaje.innerHTML =
-"❌ Incorrecto. Intenta nuevamente";
-
-mensaje.className =
-"incorrecto";
+document.getElementById("mensaje").innerHTML =
+"❌ Incorrecto, intenta otra vez";
 
 }
 
@@ -466,28 +301,15 @@ mensaje.className =
 
 function reiniciarJuego(){
 
-juegoTerminado = false;
 indice = 0;
-correcta = 0;
-posicionMono = 0;
-
-mono.style.left = "0px";
-
-mensaje.innerHTML = "";
-
-document.getElementById(
-"btnSiguiente"
-).disabled = true;
-
 cargarPregunta();
+document.getElementById("mensaje").innerHTML = "";
+document.getElementById("btnSiguiente").disabled = true;
 
 }
 
 function irSiguiente(){
-
-window.location.href =
-"juego4.html";
-
+window.location.href = "juego5.html";
 }
 
 </script>
