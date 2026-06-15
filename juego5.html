@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juego 5 - Quiz de Restas</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#42a5f5,#7e57c2);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.contenedor{
+background:white;
+width:90%;
+max-width:700px;
+padding:30px;
+border-radius:25px;
+text-align:center;
+box-shadow:0 0 25px rgba(0,0,0,.3);
+}
+
+h1{
+color:#1976d2;
+margin-bottom:20px;
+}
+
+.info{
+display:flex;
+justify-content:space-between;
+font-size:22px;
+font-weight:bold;
+margin-bottom:20px;
+}
+
+#pregunta{
+font-size:45px;
+margin:25px 0;
+color:#333;
+}
+
+.opciones{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.opcion{
+padding:18px;
+font-size:24px;
+border:none;
+border-radius:15px;
+cursor:pointer;
+background:#e3f2fd;
+transition:.3s;
+}
+
+.opcion:hover{
+transform:scale(1.05);
+}
+
+.correcta{
+background:#4caf50 !important;
+color:white;
+}
+
+.incorrecta{
+background:#f44336 !important;
+color:white;
+}
+
+#mensaje{
+margin-top:20px;
+font-size:28px;
+font-weight:bold;
+height:40px;
+}
+
+#siguiente{
+display:none;
+margin-top:25px;
+padding:15px 30px;
+font-size:22px;
+background:#ff9800;
+color:white;
+border:none;
+border-radius:15px;
+cursor:pointer;
+}
+
+.personaje{
+font-size:70px;
+margin-bottom:15px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="contenedor">
+
+<div class="personaje">🚀</div>
+
+<h1>Juego 5: Restas Espaciales</h1>
+
+<div class="info">
+<div>⭐ Puntos: <span id="puntos">0</span></div>
+<div>❤️ Vidas: <span id="vidas">3</span></div>
+</div>
+
+<div id="pregunta"></div>
+
+<div class="opciones" id="opciones"></div>
+
+<div id="mensaje"></div>
+
+<button id="siguiente">🚀 Ir al Juego 6</button>
+
+</div>
+
+<script>
+
+let puntos = 0;
+let vidas = 3;
+let correcta = 0;
+
+const pregunta = document.getElementById("pregunta");
+const opciones = document.getElementById("opciones");
+const mensaje = document.getElementById("mensaje");
+
+function nuevaPregunta(){
+
+let a = Math.floor(Math.random()*50)+20;
+let b = Math.floor(Math.random()*20)+1;
+
+correcta = a-b;
+
+pregunta.innerHTML = `${a} - ${b} = ?`;
+
+let respuestas=[correcta];
+
+while(respuestas.length<4){
+
+let falsa = correcta + Math.floor(Math.random()*15)-7;
+
+if(falsa>=0 && !respuestas.includes(falsa)){
+respuestas.push(falsa);
+}
+
+}
+
+respuestas.sort(()=>Math.random()-0.5);
+
+opciones.innerHTML="";
+
+respuestas.forEach(num=>{
+
+let btn=document.createElement("button");
+
+btn.className="opcion";
+
+btn.innerHTML=num;
+
+btn.onclick=()=>verificar(num,btn);
+
+opciones.appendChild(btn);
+
+});
+
+}
+
+function verificar(respuesta,boton){
+
+let botones=document.querySelectorAll(".opcion");
+
+botones.forEach(b=>b.disabled=true);
+
+if(respuesta===correcta){
+
+boton.classList.add("correcta");
+
+mensaje.innerHTML="🎉 ¡Correcto!";
+
+puntos++;
+
+document.getElementById("puntos").innerHTML=puntos;
+
+if(puntos>=10){
+
+pregunta.innerHTML="🏆 ¡MISIÓN COMPLETADA!";
+
+opciones.innerHTML="";
+
+mensaje.innerHTML="Has desbloqueado el Juego 6";
+
+document.getElementById("siguiente").style.display="inline-block";
+
+return;
+}
+
+setTimeout(nuevaPregunta,1000);
+
+}else{
+
+boton.classList.add("incorrecta");
+
+mensaje.innerHTML="❌ Incorrecto";
+
+vidas--;
+
+document.getElementById("vidas").innerHTML=vidas;
+
+if(vidas<=0){
+
+pregunta.innerHTML="💀 Fin del Juego";
+
+opciones.innerHTML="";
+
+mensaje.innerHTML="Inténtalo nuevamente";
+
+return;
+}
+
+setTimeout(nuevaPregunta,1000);
+
+}
+
+}
+
+document.getElementById("siguiente").onclick=function(){
+
+window.location.href="juego6.html";
+
+}
+
+nuevaPregunta();
+
+</script>
+
+</body>
+</html>
