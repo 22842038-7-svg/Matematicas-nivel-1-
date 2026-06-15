@@ -133,7 +133,7 @@ font-weight:bold;
 <h1>🚀 Juego 6 - Carrera Matemática Final</h1>
 
 <div class="info">
-<div>⭐ Avance: <span id="avance">0</span>/10</div>
+<div>⭐ Avance: <span id="avance">0</span>/5</div>
 <div>❤️ Vidas: <span id="vidas">3</span></div>
 </div>
 
@@ -198,12 +198,11 @@ document.getElementById("avance").innerHTML = avance;
 
 mensaje.innerHTML = "🎉 ¡Correcto!";
 mensaje.style.color = "green";
-
-let posicion = avance * 75;
+let posicion = avance * 150;
 
 cohete.style.left = posicion + "px";
 
-if(avance >= 10){
+if(avance >= 5){
 
 pregunta.style.display="none";
 
