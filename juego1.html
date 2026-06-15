@@ -217,8 +217,9 @@ width:200px;
 
 <div class="puntaje">
 ⭐ <span id="puntos">0</span>
+&nbsp;&nbsp;
+❤️ <span id="vidas">3</span>
 </div>
-
 </header>
 
 <div class="contenedor-juego">
@@ -304,7 +305,7 @@ let indice = 0;
 let correcta = 0;
 let posicionCohete = 0;
 let juegoTerminado = false;
-
+let vidas = 3;
 const zona = document.getElementById("zonaRespuesta");
 const mensaje = document.getElementById("mensaje");
 const cohete = document.getElementById("cohete");
@@ -495,15 +496,39 @@ cargarPregunta();
 
 }else{
 
+vidas--;
+
+document.getElementById("vidas").textContent = vidas;
+
 document.getElementById(
 "audioError"
 ).play();
 
 mensaje.innerHTML =
-"❌ Incorrecto. Intenta nuevamente";
+"❌ Incorrecto. Pierdes una vida";
 
 mensaje.className =
 "incorrecto";
+
+if(vidas <= 0){
+
+juegoTerminado = true;
+
+mensaje.innerHTML =
+"💀 GAME OVER - Te quedaste sin vidas";
+
+mensaje.className =
+"incorrecto";
+
+cohete.style.left = "0px";
+
+document.getElementById(
+"btnSiguiente"
+).disabled = true;
+
+return;
+
+}
 
 }
 
