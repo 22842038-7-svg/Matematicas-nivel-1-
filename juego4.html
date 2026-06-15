@@ -17,10 +17,16 @@ font-family:Arial,sans-serif;
 }
 
 body{
-background:linear-gradient(135deg,#2196f3,#0d47a1);
-min-height:100vh;
+    background-image:url("mickey.jpg");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
 }
-
 .barra-superior{
 display:flex;
 justify-content:space-between;
@@ -51,8 +57,14 @@ color:#ff9800;
 }
 
 .contenedor{
-text-align:center;
-padding:20px;
+    background:rgba(255,255,255,0.9);
+    backdrop-filter:blur(5px);
+    width:700px;
+    max-width:100%;
+    border-radius:25px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
 
 h1{
