@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juego 6 - Carrera Matemática Final</title>
+
+<title>Juego 6 - Encuentra el Tesoro</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 <style>
 
@@ -11,275 +14,294 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial, sans-serif;
+font-family:Arial,sans-serif;
 }
 
 body{
-background-image:url("img/fondo.jpeg");
+background-image:url("img/fondo.jpg");
 background-size:cover;
 background-position:center;
 background-repeat:no-repeat;
-background-attachment:fixed;
 min-height:100vh;
-}
-
-.contenedor{
-background:white;
-width:900px;
-max-width:100%;
-padding:25px;
-border-radius:25px;
 text-align:center;
-box-shadow:0 0 25px rgba(0,0,0,.3);
+overflow:hidden;
 }
 
 h1{
-color:#ff5722;
-margin-bottom:15px;
+margin-top:20px;
+font-size:45px;
+color:white;
+text-shadow:2px 2px 5px black;
 }
 
 .info{
 display:flex;
-justify-content:space-around;
-font-size:22px;
+justify-content:center;
+gap:40px;
+margin:20px;
+font-size:28px;
 font-weight:bold;
-margin-bottom:15px;
-}
-
-.pista{
-width:100%;
-height:120px;
-background:#e0e0e0;
-border-radius:15px;
-position:relative;
-overflow:hidden;
-margin:20px 0;
-border:4px solid #555;
-}
-
-.meta{
-position:absolute;
-right:0;
-top:0;
-width:15px;
-height:100%;
-background:repeating-linear-gradient(
-45deg,
-black,
-black 10px,
-white 10px,
-white 20px
-);
-}
-
-.cohete{
-position:absolute;
-left:10px;
-top:25px;
-font-size:60px;
-transition:1s;
+color:white;
 }
 
 #pregunta{
 font-size:40px;
-margin:20px 0;
-}
-
-input{
-padding:15px;
-font-size:24px;
-width:150px;
-text-align:center;
-border-radius:10px;
-border:2px solid #ccc;
-}
-
-button{
-padding:15px 25px;
-font-size:22px;
-border:none;
-border-radius:10px;
-background:#4caf50;
 color:white;
-cursor:pointer;
-margin-left:10px;
+margin:20px;
+text-shadow:2px 2px 5px black;
 }
 
-button:hover{
-transform:scale(1.05);
+#tablero{
+width:90%;
+max-width:900px;
+margin:auto;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+padding:20px;
+}
+
+.moneda{
+width:120px;
+height:120px;
+margin:auto;
+border-radius:50%;
+background:gold;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:40px;
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 0 15px black;
+transition:.3s;
+}
+
+.moneda:hover{
+transform:scale(1.1);
 }
 
 #mensaje{
-margin-top:15px;
-font-size:28px;
+font-size:30px;
 font-weight:bold;
-min-height:40px;
+margin-top:20px;
+color:white;
+text-shadow:2px 2px 5px black;
 }
 
-#final{
-display:none;
-margin-top:20px;
-font-size:32px;
-color:green;
-font-weight:bold;
+@media(max-width:768px){
+
+#tablero{
+grid-template-columns:repeat(2,1fr);
+}
+
+.moneda{
+width:100px;
+height:100px;
+font-size:30px;
+}
+
 }
 
 </style>
 </head>
+
 <body>
 
-<div class="contenedor">
-
-<h1>🚀 Juego 6 - Carrera Matemática Final</h1>
+<h1>🏴‍☠️ Encuentra el Tesoro Correcto</h1>
 
 <div class="info">
-<div>⭐ Avance: <span id="avance">0</span>/5</div>
+<div>⭐ Aciertos: <span id="aciertos">0</span>/5</div>
 <div>❤️ Vidas: <span id="vidas">3</span></div>
-</div>
-
-<div class="pista">
-
-<div class="cohete" id="cohete">🚀</div>
-
-<div class="meta"></div>
-
 </div>
 
 <div id="pregunta"></div>
 
-<input type="number" id="respuesta">
-
-<button onclick="verificar()">
-Responder
-</button>
+<div id="tablero"></div>
 
 <div id="mensaje"></div>
 
-<div id="final">
-🏆 ¡FELICIDADES! TERMINASTE TODOS LOS JUEGOS 🏆
-</div>
-
-</div>
+<audio id="audioCorrecto" src="audio/correcto.mp3"></audio>
+<audio id="audioError" src="audio/error.mp3"></audio>
+<audio id="audioFelicitacion" src="audio/felicitaciones.mp3"></audio>
 
 <script>
 
-let correcta;
-let avance = 0;
 let vidas = 3;
+let aciertos = 0;
+let respuestaCorrecta = 0;
 
-const pregunta = document.getElementById("pregunta");
-const mensaje = document.getElementById("mensaje");
-const cohete = document.getElementById("cohete");
+const tablero =
+document.getElementById("tablero");
 
 function nuevaPregunta(){
 
-let a = Math.floor(Math.random()*30)+20;
-let b = Math.floor(Math.random()*20)+1;
+let a =
+Math.floor(Math.random()*10)+1;
 
-correcta = a-b;
+let b =
+Math.floor(Math.random()*10)+1;
 
-pregunta.innerHTML = `${a} - ${b} = ?`;
+respuestaCorrecta = a + b;
 
-document.getElementById("respuesta").value="";
-document.getElementById("respuesta").focus();
+document.getElementById(
+"pregunta"
+).innerHTML =
+`💰 ¿Cuánto es ${a} + ${b}?`;
+
+crearMonedas();
 
 }
 
-function verificar(){
+function crearMonedas(){
 
-let respuesta =
-Number(document.getElementById("respuesta").value);
+tablero.innerHTML = "";
 
-if(respuesta === correcta){
+let numeros = [respuestaCorrecta];
 
-avance++;
+while(numeros.length < 8){
 
-document.getElementById("avance").innerHTML = avance;
+let falso =
+respuestaCorrecta +
+Math.floor(Math.random()*10)-5;
 
-mensaje.innerHTML = "🎉 ¡Correcto!";
-mensaje.style.color = "green";
-let posicion = avance * 150;
+if(
+falso > 0 &&
+!numeros.includes(falso)
+){
+numeros.push(falso);
+}
 
-cohete.style.left = posicion + "px";
+}
 
-if(avance >= 5){
+numeros.sort(
+()=>Math.random()-0.5
+);
 
-pregunta.style.display="none";
+numeros.forEach(numero=>{
 
-document.getElementById("respuesta").style.display="none";
+let moneda =
+document.createElement("div");
 
-document.querySelector("button").style.display="none";
+moneda.className =
+"moneda";
 
-mensaje.innerHTML="";
+moneda.innerHTML =
+numero;
 
-document.getElementById("final").style.display="block";
+moneda.onclick =
+()=> validar(numero);
+
+tablero.appendChild(moneda);
+
+});
+
+}
+
+function validar(numero){
+
+if(numero === respuestaCorrecta){
+
+document.getElementById(
+"audioCorrecto"
+).play();
+
+document.getElementById(
+"mensaje"
+).innerHTML =
+"✅ ¡Correcto!";
+
+aciertos++;
+
+document.getElementById(
+"aciertos"
+).innerHTML =
+aciertos;
+
+if(aciertos >= 5){
+
+ganar();
 
 return;
+
 }
+
+setTimeout(()=>{
+
+document.getElementById(
+"mensaje"
+).innerHTML="";
+
+nuevaPregunta();
+
+},1000);
 
 }else{
 
+document.getElementById(
+"audioError"
+).play();
+
 vidas--;
 
-document.getElementById("vidas").innerHTML = vidas;
+document.getElementById(
+"vidas"
+).innerHTML =
+vidas;
 
-mensaje.innerHTML =
-"❌ Incorrecto. El cohete retrocede.";
-
-mensaje.style.color = "red";
-
-avance = Math.max(0,avance-1);
-
-document.getElementById("avance").innerHTML = avance;
-
-let posicion = avance * 75;
-
-cohete.style.left = posicion + "px";
+document.getElementById(
+"mensaje"
+).innerHTML =
+"❌ Incorrecto";
 
 if(vidas <= 0){
 
-pregunta.innerHTML="💀 PERDISTE";
+document.getElementById(
+"mensaje"
+).innerHTML =
+"💀 GAME OVER";
 
-document.getElementById("respuesta").style.display="none";
-
-document.querySelector("button").style.display="none";
-
-mensaje.innerHTML="Inténtalo nuevamente";
-
-return;
-
-}
-
-}
-
-nuevaPregunta();
-
-}
-
-document.getElementById("respuesta")
-.addEventListener("keypress",function(e){
-
-if(e.key==="Enter"){
-verificar();
-}
-
-});
 setTimeout(()=>{
 
-window.location.href = "final.html";
+location.reload();
+
+},2500);
+
+}
+
+}
+
+}
+
+function ganar(){
+
+document.getElementById(
+"audioFelicitacion"
+).play();
+
+confetti({
+particleCount:300,
+spread:180
+});
+
+document.getElementById(
+"mensaje"
+).innerHTML =
+"🏆 ¡ENCONTRASTE TODOS LOS TESOROS!";
+
+setTimeout(()=>{
+
+window.location.href =
+"final.html";
 
 },3000);
 
-return;
-nuevaPregunta();
-  function irSiguiente(){
-    
-
-window.location.href = "final.html";
-
 }
+
+nuevaPregunta();
 
 </script>
 
 </body>
 </html>
+
