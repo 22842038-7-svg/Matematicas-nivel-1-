@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juego 6 - Carrera Matemática Final</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#ff9800,#ff5722);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+}
+
+.contenedor{
+background:white;
+width:900px;
+max-width:100%;
+padding:25px;
+border-radius:25px;
+text-align:center;
+box-shadow:0 0 25px rgba(0,0,0,.3);
+}
+
+h1{
+color:#ff5722;
+margin-bottom:15px;
+}
+
+.info{
+display:flex;
+justify-content:space-around;
+font-size:22px;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+.pista{
+width:100%;
+height:120px;
+background:#e0e0e0;
+border-radius:15px;
+position:relative;
+overflow:hidden;
+margin:20px 0;
+border:4px solid #555;
+}
+
+.meta{
+position:absolute;
+right:0;
+top:0;
+width:15px;
+height:100%;
+background:repeating-linear-gradient(
+45deg,
+black,
+black 10px,
+white 10px,
+white 20px
+);
+}
+
+.cohete{
+position:absolute;
+left:10px;
+top:25px;
+font-size:60px;
+transition:1s;
+}
+
+#pregunta{
+font-size:40px;
+margin:20px 0;
+}
+
+input{
+padding:15px;
+font-size:24px;
+width:150px;
+text-align:center;
+border-radius:10px;
+border:2px solid #ccc;
+}
+
+button{
+padding:15px 25px;
+font-size:22px;
+border:none;
+border-radius:10px;
+background:#4caf50;
+color:white;
+cursor:pointer;
+margin-left:10px;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+#mensaje{
+margin-top:15px;
+font-size:28px;
+font-weight:bold;
+min-height:40px;
+}
+
+#final{
+display:none;
+margin-top:20px;
+font-size:32px;
+color:green;
+font-weight:bold;
+}
+
+</style>
+</head>
+<body>
+
+<div class="contenedor">
+
+<h1>🚀 Juego 6 - Carrera Matemática Final</h1>
+
+<div class="info">
+<div>⭐ Avance: <span id="avance">0</span>/10</div>
+<div>❤️ Vidas: <span id="vidas">3</span></div>
+</div>
+
+<div class="pista">
+
+<div class="cohete" id="cohete">🚀</div>
+
+<div class="meta"></div>
+
+</div>
+
+<div id="pregunta"></div>
+
+<input type="number" id="respuesta">
+
+<button onclick="verificar()">
+Responder
+</button>
+
+<div id="mensaje"></div>
+
+<div id="final">
+🏆 ¡FELICIDADES! TERMINASTE TODOS LOS JUEGOS 🏆
+</div>
+
+</div>
+
+<script>
+
+let correcta;
+let avance = 0;
+let vidas = 3;
+
+const pregunta = document.getElementById("pregunta");
+const mensaje = document.getElementById("mensaje");
+const cohete = document.getElementById("cohete");
+
+function nuevaPregunta(){
+
+let a = Math.floor(Math.random()*30)+20;
+let b = Math.floor(Math.random()*20)+1;
+
+correcta = a-b;
+
+pregunta.innerHTML = `${a} - ${b} = ?`;
+
+document.getElementById("respuesta").value="";
+document.getElementById("respuesta").focus();
+
+}
+
+function verificar(){
+
+let respuesta =
+Number(document.getElementById("respuesta").value);
+
+if(respuesta === correcta){
+
+avance++;
+
+document.getElementById("avance").innerHTML = avance;
+
+mensaje.innerHTML = "🎉 ¡Correcto!";
+mensaje.style.color = "green";
+
+let posicion = avance * 75;
+
+cohete.style.left = posicion + "px";
+
+if(avance >= 10){
+
+pregunta.style.display="none";
+
+document.getElementById("respuesta").style.display="none";
+
+document.querySelector("button").style.display="none";
+
+mensaje.innerHTML="";
+
+document.getElementById("final").style.display="block";
+
+return;
+}
+
+}else{
+
+vidas--;
+
+document.getElementById("vidas").innerHTML = vidas;
+
+mensaje.innerHTML =
+"❌ Incorrecto. El cohete retrocede.";
+
+mensaje.style.color = "red";
+
+avance = Math.max(0,avance-1);
+
+document.getElementById("avance").innerHTML = avance;
+
+let posicion = avance * 75;
+
+cohete.style.left = posicion + "px";
+
+if(vidas <= 0){
+
+pregunta.innerHTML="💀 PERDISTE";
+
+document.getElementById("respuesta").style.display="none";
+
+document.querySelector("button").style.display="none";
+
+mensaje.innerHTML="Inténtalo nuevamente";
+
+return;
+
+}
+
+}
+
+nuevaPregunta();
+
+}
+
+document.getElementById("respuesta")
+.addEventListener("keypress",function(e){
+
+if(e.key==="Enter"){
+verificar();
+}
+
+});
+
+nuevaPregunta();
+
+</script>
+
+</body>
+</html>
