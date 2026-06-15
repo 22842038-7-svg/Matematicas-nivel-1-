@@ -1,0 +1,2411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juego 3 - Aventura de Divisiones</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background-image:url("img/fondo.jpeg");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+background-attachment:fixed;
+min-height:100vh;
+}
+
+/* INSTRUCCIONES */
+#panelInstrucciones{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100vh;
+background:rgba(0,0,0,0.85);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+#panelInstrucciones .caja{
+background:white;
+color:black;
+padding:25px;
+border-radius:20px;
+width:90%;
+max-width:450px;
+text-align:center;
+}
+
+#panelInstrucciones button{
+margin-top:15px;
+padding:12px 18px;
+border:none;
+background:#4caf50;
+color:white;
+border-radius:10px;
+cursor:pointer;
+}
+
+/* BARRA */
+.barra-superior{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 30px;
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,.2);
+}
+
+.usuario{
+display:flex;
+align-items:center;
+gap:10px;
+font-weight:bold;
+font-size:18px;
+}
+
+.usuario img{
+width:60px;
+height:60px;
+border-radius:50%;
+border:3px solid orange;
+}
+
+.puntaje{
+font-size:28px;
+font-weight:bold;
+color:#ff9800;
+}
+
+.online{
+display:flex;
+align-items:center;
+gap:8px;
+font-weight:bold;
+color:#4caf50;
+}
+
+.dot{
+width:10px;
+height:10px;
+border-radius:50%;
+background:#4caf50;
+}
+
+/* CONTENIDO */
+.contenedor-juego{
+text-align:center;
+padding:25px;
+}
+
+h1{
+color:white;
+font-size:40px;
+text-shadow:2px 2px 5px black;
+}
+
+/* VIDAS */
+.vidas{
+color:white;
+font-size:22px;
+font-weight:bold;
+margin:10px;
+text-shadow:2px 2px 5px black;
+}
+
+/* ESCENARIO */
+.escenario{
+width:700px;
+max-width:95%;
+height:120px;
+margin:auto;
+background:white;
+border-radius:20px;
+position:relative;
+overflow:hidden;
+}
+
+#mono{
+font-size:70px;
+position:absolute;
+left:0;
+top:20px;
+transition:.4s;
+}
+
+.walk{
+animation:walk .4s;
+}
+
+@keyframes walk{
+0%{transform:translateY(0);}
+50%{transform:translateY(-5px);}
+100%{transform:translateY(0);}
+}
+
+.meta{
+position:absolute;
+right:20px;
+top:20px;
+font-size:60px;
+}
+
+/* BLOQUE */
+.bloque-pregunta{
+background:rgba(0,0,0,0.25);
+padding:20px;
+border-radius:20px;
+width:90%;
+max-width:600px;
+margin:20px auto;
+}
+
+/* PREGUNTA */
+.pregunta h2{
+font-size:36px;
+color:white;
+text-shadow:2px 2px 5px black;
+margin-bottom:15px;
+}
+
+/* OPCIONES */
+.opciones{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.respuesta{
+width:120px;
+height:120px;
+background:#ffeb3b;
+border-radius:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:40px;
+font-weight:bold;
+cursor:grab;
+}
+
+/* DROP */
+#zonaRespuesta{
+width:250px;
+height:120px;
+background:white;
+border:4px dashed #4caf50;
+border-radius:20px;
+margin:25px auto;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:25px;
+font-weight:bold;
+}
+
+/* MENSAJES */
+#mensaje{
+font-size:26px;
+font-weight:bold;
+margin-top:10px;
+}
+
+.correcto{color:#00ff66;}
+.incorrecto{color:red;}
+</style>
+</head>
+
+<body>
+
+<!-- INSTRUCCIONES -->
+<div id="panelInstrucciones">
+<div class="caja">
+<h2>🎮 Instrucciones</h2>
+<p>✔ Arrastra la respuesta correcta</p>
+<p>✔ Tienes 3 vidas</p>
+<p>✔ Si fallas pierdes una vida</p>
+<p>✔ Si aciertas avanzas</p>
+<button onclick="iniciarJuego()">Empezar</button>
+</div>
+</div>
+
+<header class="barra-superior">
+<div class="usuario">
+<img src="img/avatar.png">
+<span>Estudiante</span>
+</div>
+
+<div class="online">
+<div class="dot"></div>
+<span>En línea</span>
+</div>
+
+<div class="puntaje">⭐</div>
+</header>
+
+<div class="contenedor-juego">
+
+<h1>🐵 Aventura de Divisiones</h1>
+
+<div class="vidas">❤️ Vidas: <span id="vidas">3</span></div>
+
+<div class="escenario">
+<div id="mono">🐵</div>
+<div class="meta">🍌</div>
+</div>
+
+<div class="bloque-pregunta">
+
+<div class="pregunta">
+<h2></h2>
+</div>
+
+<div class="opciones">
+<div class="respuesta" draggable="true"></div>
+<div class="respuesta" draggable="true"></div>
+<div class="respuesta" draggable="true"></div>
+</div>
+
+</div>
+
+<div id="zonaRespuesta">Suelta aquí</div>
+
+<div id="mensaje"></div>
+
+</div>
+
+<audio id="bien" src="sonido/bien.mp3"></audio>
+<audio id="error" src="sonido/error.mp3"></audio>
+
+<script>
+const preguntas=[
+{a:12,b:3},
+{a:16,b:4},
+{a:20,b:5},
+{a:18,b:3},
+{a:24,b:4}
+];
+
+let i=0;
+let correcta=0;
+let monoPos=0;
+let vidas=3;
+let terminado=false;
+
+const mono=document.getElementById("mono");
+const msg=document.getElementById("mensaje");
+
+let vozActual = null;
+
+/* 🔥 VOZ QUE ESPERA TERMINAR */
+function hablar(texto){
+return new Promise(resolve=>{
+speechSynthesis.cancel();
+
+vozActual = new SpeechSynthesisUtterance(texto);
+vozActual.lang="es-ES";
+vozActual.rate=0.95;
+
+vozActual.onend = resolve;
+
+speechSynthesis.speak(vozActual);
+});
+}
+
+/* 🔥 INICIO CON INSTRUCCIONES COMPLETAS */
+function iniciarJuego(){
+
+document.getElementById("panelInstrucciones").style.display="none";
+
+hablar(
+"Bienvenido al juego. Arrastra la respuesta correcta. Tienes tres vidas. Si fallas pierdes una vida. Si aciertas avanzas. Comenzamos"
+).then(()=>{
+cargar();
+});
+
+}
+
+/* CARGAR PREGUNTA */
+function cargar(){
+let p=preguntas[i];
+correcta=p.a/p.b;
+
+document.querySelector(".pregunta h2").innerHTML =
+`${p.a} ÷ ${p.b} = ?`;
+
+hablar(`¿Cuánto es ${p.a} dividido ${p.b}?`);
+
+let arr=[correcta];
+while(arr.length<3){
+let f=correcta+Math.floor(Math.random()*5)-2;
+if(!arr.includes(f))arr.push(f);
+}
+arr.sort(()=>Math.random()-0.5);
+
+document.querySelectorAll(".respuesta").forEach((r,j)=>{
+r.textContent=arr[j];
+r.dataset.val=arr[j];
+});
+}
+
+/* DRAG */
+document.querySelectorAll(".respuesta").forEach(r=>{
+r.addEventListener("dragstart",e=>{
+e.dataTransfer.setData("text",e.target.dataset.val);
+});
+});
+
+document.getElementById("zonaRespuesta").addEventListener("dragover",e=>e.preventDefault());
+
+document.getElementById("zonaRespuesta").addEventListener("drop",e=>{
+let v=parseInt(e.dataTransfer.getData("text"));
+validar(v);
+});
+
+function validar(v){
+
+if(terminado)return;
+
+if(v===correcta){
+
+document.getElementById("bien").play();
+msg.textContent="Correcto";
+
+monoPos+=140;
+mono.classList.add("walk");
+mono.style.left=monoPos+"px";
+setTimeout(()=>mono.classList.remove("walk"),400);
+
+i++;
+setTimeout(cargar,900);
+
+}else{
+
+document.getElementById("error").play();
+
+vidas--;
+document.getElementById("vidas").textContent=vidas;
+
+msg.textContent="Incorrecto";
+
+monoPos=Math.max(0,monoPos-60);
+mono.style.left=monoPos+"px";
+
+if(vidas<=0){
+terminado=true;
+msg.textContent="Perdiste";
+hablar("Juego terminado");
+}
+}
+}
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juego 2 - Carrera de Multiplicaciones</title>
+
+<link rel="stylesheet" href="css/juego2.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+
+<!-- INSTRUCCIONES -->
+<div id="panelInstrucciones">
+<h2>🧠 Instrucciones</h2>
+<p>✔ Arrastra la respuesta correcta</p>
+<p>✔ Tienes 3 vidas ❤️</p>
+<p>✔ Si fallas pierdes una vida</p>
+<p>✔ Puedes avanzar aunque falles</p>
+
+<button onclick="comenzarJuego()">Comenzar</button>
+</div>
+
+<header class="barra-superior">
+
+<div class="usuario">
+<img id="avatarUsuario" src="img/avatar.png">
+<span id="nombreUsuario">Estudiante</span>
+</div>
+
+<div class="estado-online">
+🟢 En línea
+</div>
+
+<div class="vidas" id="vidas">❤️❤️❤️</div>
+
+<div class="puntaje">
+⭐ <span id="puntos">0</span>
+</div>
+
+</header>
+
+<div class="contenedor-juego">
+
+<h1>🦖 Carrera de Multiplicaciones</h1>
+
+<p class="instruccion">
+Arrastra la respuesta correcta para ayudar al dinosaurio a llegar a la meta.
+</p>
+
+<div class="escenario">
+<div id="cohete">🦖</div>
+<div class="meta">🏁</div>
+</div>
+
+<div class="pregunta">
+<h2>2 × 3 = ?</h2>
+</div>
+
+<div class="opciones">
+<div class="respuesta" draggable="true">6</div>
+<div class="respuesta" draggable="true">8</div>
+<div class="respuesta" draggable="true">10</div>
+</div>
+
+<div class="zona-contenedor">
+<div id="zonaRespuesta">Suelta aquí</div>
+</div>
+
+<div id="mensaje"></div>
+
+<div class="botones">
+
+<button onclick="reiniciarJuego()">🔄 Reiniciar</button>
+
+<button id="btnSiguiente" disabled onclick="irSiguiente()">
+➡️ Siguiente Nivel
+</button>
+
+<a href="todoslosjuegos.html">
+<button type="button">🏠 Inicio</button>
+</a>
+
+</div>
+
+</div>
+
+<audio id="audioCorrecto" src="sonido/bien.mp3"></audio>
+<audio id="audioError" src="sonido/error.mp3"></audio>
+<audio id="audioNumero" src="sonido/click.mp3"></audio>
+<audio id="audioFelicitacion" src="sonido/bien.mp3"></audio>
+
+<script src="js/juego2.js"></script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juego 1 - Carrera Espacial de Sumas</title>
+
+<link rel="stylesheet" href="css/juego1.css">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+</head>
+<body>
+
+<!-- Pantalla de instrucciones -->
+
+<div id="pantallaInstrucciones">
+
+<div class="caja-instrucciones">
+
+<h2>📖 Instrucciones</h2>
+
+<p>
+Arrastra la respuesta correcta hasta la zona indicada.
+<br><br>
+Cada respuesta correcta hará avanzar el cohete.
+<br><br>
+Si te equivocas perderás una vida y el cohete retrocederá.
+<br><br>
+Llega a la meta para ganar.
+</p>
+
+<button id="btnComenzar">
+🚀 Comenzar
+</button>
+
+</div>
+
+</div>
+
+<header class="barra-superior">
+
+<div class="usuario">
+<img id="avatarUsuario" src="img/avatar.png">
+<span id="nombreUsuario">Estudiante</span>
+</div>
+
+<div class="puntaje">
+
+⭐ <span id="puntos">0</span>
+
+&nbsp;&nbsp;
+
+❤️ <span id="vidas">3</span>
+
+<br>
+
+<span id="estadoOnline">
+🟢 En línea
+</span>
+
+</div>
+
+</header>
+
+<div class="contenedor-juego">
+
+<h1>🚀 Carrera Espacial de Sumas</h1>
+
+<p class="instruccion">
+Arrastra la respuesta correcta para que el cohete avance.
+</p>
+
+<div class="escenario">
+
+<div id="cohete">🚀</div>
+
+<div class="meta">🌎</div>
+
+</div>
+
+<div class="pregunta">
+<h2>5 + 3 = ?</h2>
+</div>
+
+<div class="opciones">
+
+<div class="respuesta" draggable="true" data-valor="8">
+8
+</div>
+
+<div class="respuesta" draggable="true" data-valor="6">
+6
+</div>
+
+<div class="respuesta" draggable="true" data-valor="10">
+10
+</div>
+
+</div>
+
+<div class="zona-contenedor">
+<div id="zonaRespuesta">
+Suelta aquí
+</div>
+</div>
+
+<div id="mensaje"></div>
+
+<div class="botones">
+
+<button onclick="reiniciarJuego()">
+🔄 Reiniciar
+</button>
+
+<button id="btnSiguiente" disabled onclick="irSiguiente()">
+➡️ Siguiente Nivel
+</button>
+
+<a href="todoslosjuegos.html">
+<button type="button">
+🏠 Inicio
+</button>
+</a>
+
+</div>
+
+</div>
+
+<audio id="audioCorrecto" src="sonido/bien.mp3"></audio>
+
+<audio id="audioError" src="sonido/error.mp3"></audio>
+
+<audio id="audioNumero" src="sonido/click.mp3"></audio>
+
+<audio id="audioFelicitacion" src="sonido/bien.mp3"></audio>
+
+<audio id="audioInstrucciones" src="audio/instrucciones.mp3"></audio>
+
+<script src="js/juego1.js"></script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Aprendiendo Matemática</title>
+
+<link rel="stylesheet" href="css/estilo_4basico.css">
+
+</head>
+
+<body>
+
+<img
+src="img/fondo.jpeg"
+class="imagen-fondo"
+>
+
+<audio autoplay loop>
+<source src="audio/musica.mp3">
+</audio>
+
+<div class="contenedor">
+
+    <div class="perfil">
+
+        <img
+        id="avatarUsuario"
+        src=""
+        alt="Avatar"
+        >
+
+        <div>
+
+            <h2 id="nombreUsuario"></h2>
+
+            <p>🎓 4° Básico</p>
+
+        </div>
+
+    </div>
+
+    <h1>
+        📚 Aprendamos Matemática
+    </h1>
+
+    <p class="intro">
+
+        Antes de jugar repasaremos las operaciones básicas.
+
+    </p>
+
+    <!-- SUMA -->
+
+    <div class="tarjeta">
+
+        <img src="img/suma.png">
+
+        <h2>➕ Suma</h2>
+
+        <p>
+            La suma sirve para juntar cantidades.
+        </p>
+
+        <h3>
+            3 + 2 = 5
+        </h3>
+
+        <button onclick="hablar('La suma sirve para juntar cantidades')">
+            🔊 Escuchar
+        </button>
+
+    </div>
+
+    <!-- RESTA -->
+
+    <div class="tarjeta">
+
+        <img src="img/resta.png">
+
+        <h2>➖ Resta</h2>
+
+        <p>
+            La resta sirve para quitar cantidades.
+        </p>
+
+        <h3>
+            8 - 3 = 5
+        </h3>
+
+        <button onclick="hablar('La resta sirve para quitar cantidades')">
+            🔊 Escuchar
+        </button>
+
+    </div>
+
+    <!-- MULTIPLICACIÓN -->
+
+    <div class="tarjeta">
+
+        <img src="img/multiplicacion.png">
+
+        <h2>✖️ Multiplicación</h2>
+
+        <p>
+            Es una suma repetida.
+        </p>
+
+        <h3>
+            3 × 4 = 12
+        </h3>
+
+        <button onclick="hablar('La multiplicación es una suma repetida')">
+            🔊 Escuchar
+        </button>
+
+    </div>
+
+    <!-- DIVISIÓN -->
+
+    <div class="tarjeta">
+
+        <img src="img/division.png">
+
+        <h2>➗ División</h2>
+
+        <p>
+            Sirve para repartir en partes iguales.
+        </p>
+
+        <h3>
+            12 ÷ 3 = 4
+        </h3>
+
+        <button onclick="hablar('La división sirve para repartir cantidades')">
+            🔊 Escuchar
+        </button>
+
+    </div>
+
+    <button
+    class="comenzar"
+    onclick="comenzarJuego()">
+
+        🚀 Comenzar Aventura Matemática
+
+    </button>
+
+</div>
+
+<script src="js/basico4.js"></script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido</title>
+
+    <link rel="stylesheet" href="css/estilo_bienvenida.css">
+</head>
+
+<body>
+
+    <div class="contenedor-bienvenida">
+
+        <h1 id="saludo"></h1>
+
+        <img
+            id="avatarUsuario"
+            src=""
+            alt="Avatar"
+        >
+
+        <h2 id="nombreUsuario"></h2>
+
+        <p>
+            ¿Estas listo para aprender?
+        </p>
+
+        <div class="botones">
+
+            <div class="botones">
+
+    <button onclick="continuar()">
+        Continuar
+    </button>
+
+    <a href="basico4.html">
+        🎓 4° Básico
+    </a>
+
+    <a href="todos.html" class="btn-juegos">
+        🎮 Todos los Juegos
+    </a>
+
+</div>
+        </div>
+
+    </div>
+
+    <script src="js/bienvenido.js"></script>
+
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>¡Felicitaciones!</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background-image:url("img/fondo.jpeg");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+height:100vh;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+}
+
+.contenedor{
+background:rgba(255,255,255,.95);
+padding:40px;
+border-radius:30px;
+width:90%;
+max-width:700px;
+box-shadow:0 0 30px rgba(0,0,0,.4);
+animation:aparecer 1s ease;
+}
+
+h1{
+font-size:50px;
+color:#ff9800;
+margin-bottom:20px;
+}
+
+p{
+font-size:28px;
+margin-bottom:25px;
+}
+
+.estrellas{
+font-size:90px;
+animation:brillar 1s infinite alternate;
+}
+
+button{
+margin-top:25px;
+padding:15px 30px;
+font-size:22px;
+border:none;
+border-radius:15px;
+background:#4caf50;
+color:white;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+transform:scale(1.1);
+}
+
+@keyframes brillar{
+
+from{
+transform:scale(1);
+}
+
+to{
+transform:scale(1.2);
+}
+
+}
+
+@keyframes aparecer{
+
+from{
+opacity:0;
+transform:translateY(-50px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+<h1>🏆 ¡FELICITACIONES! 🏆</h1>
+
+<p>
+Has completado todos los juegos matemáticos.
+</p>
+
+<div class="estrellas">
+⭐ ⭐ ⭐
+</div>
+
+<p>
+Eres un verdadero campeón de las matemáticas.
+</p>
+
+<button onclick="volverInicio()">
+🏠 Volver al Inicio
+</button>
+
+</div>
+
+<audio id="celebracion" autoplay>
+<source src="audio/felicitaciones.mp3">
+</audio>
+
+<script>
+
+function volverInicio(){
+
+window.location.href="todoslosjuegos.html";
+
+}
+
+function lanzarConfeti(){
+
+confetti({
+particleCount:300,
+spread:180,
+origin:{y:0.6}
+});
+
+}
+
+lanzarConfeti();
+
+setInterval(()=>{
+
+confetti({
+particleCount:80,
+spread:100
+});
+
+},2500);
+
+</script>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="icon" href="img/icon.png" image/png">
+    <link rel="stylesheet" href="css/estilo_login.css">
+    
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <h1>Iniciar sesion</h1>
+        <p>Aprende jugando con números</p>
+
+        <img src="img/plataaa.png" class="imagen-principal" alt="Matemáticas">
+
+        <div>
+            <input type="text" id="nombre" placeholder="Ingresa tu nombre">
+        </div>
+
+        <h2>Escoge tu avatar</h2>
+
+        <div class="contenedor-avatares">
+            <img src="img/avatar1.jpg" onclick="seleccionar(this)">
+            <img src="img/avatar2.jpg" onclick="seleccionar(this)">
+            <img src="img/avatar3.png" onclick="seleccionar(this)">
+            <img src="img/avatar5.png" onclick="seleccionar(this)">
+            <img src="img/avatar6.png" onclick="seleccionar(this)">
+            <img src="img/avatar4.jpg" onclick="seleccionar(this)">
+        </div>
+        <button onclick="ingresar()">Ingresar</button>
+    </div>
+
+    <audio id="click" src="sonido/click.mp3"></audio>
+    <audio id="error" src="sonido/error.mp3"></audio>
+    <audio id="errorNombre" src="sonido/error.mp3"></audio>
+    <audio id="errorAvatar" src="sonido/error.mp3"></audio>
+    <audio id="bien" src="sonido/bien.mp3"></audio>
+
+
+    <script src="js/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+</body>
+</html>
+
+
+z<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordena los números</title>
+
+    <link rel="stylesheet" href="css/estilo_juego.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+
+    <img
+        src="img/fondo.jpeg"
+        class="imagen-fondo"
+        id="fondo"
+    >
+
+    <!-- avatar -->
+    <div class="perfil-jugador">
+
+        <img
+            id="avatarJuego"
+            src=""
+            alt=""
+        >
+
+        <div class="datos-jugador">
+
+            <div class="curso">
+                🎓 4° Básico
+            </div>
+
+            <div class="estado">
+
+                <span class="punto"></span>
+
+                En línea
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="contenido">
+
+        <h1>🔢 Ordena los números 🔢</h1>
+
+        <p id="mensaje"></p>
+
+        <div id="estrellas">
+            ⭐⭐⭐
+        </div>
+
+        <div class="barra">
+
+            <div
+                id="progreso"
+                class="progreso"
+            ></div>
+
+        </div>
+
+        <div
+            class="tablero"
+            id="tablero"
+        ></div>
+
+        <div
+            class="piezas"
+            id="piezas"
+        ></div>
+
+        <button
+            id="comprobar"
+            class="oculto"
+        >
+            ✅ Comprobar
+        </button>
+
+        <a
+            href="bienvenido.html"
+            id="volverInicio"
+        >
+            🏠 Volver al inicio
+        </a>
+
+    </div>
+
+    <!-- preguntas -->
+    <div
+        id="preguntaBox"
+        class="oculto"
+    >
+
+        <h2 id="preguntaTexto"></h2>
+
+        <div id="opciones"></div>
+
+    </div>
+
+    <script src="js/juego.js"></script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juego 4 - Atrapa el número</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background-image:url("img/fondo.jpeg");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+background-attachment:fixed;
+min-height:100vh;
+}
+.barra-superior{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 25px;
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,.2);
+}
+
+.usuario{
+display:flex;
+align-items:center;
+gap:10px;
+font-weight:bold;
+}
+
+.usuario img{
+width:60px;
+height:60px;
+border-radius:50%;
+border:3px solid orange;
+}
+
+.puntaje{
+font-size:28px;
+font-weight:bold;
+color:#ff9800;
+}
+
+.contenedor{
+    background:rgba(255,255,255,0.9);
+    backdrop-filter:blur(5px);
+    width:700px;
+    max-width:100%;
+    border-radius:25px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+
+h1{
+color:#ff9800;
+font-size:40px;
+margin-bottom:10px;
+text-shadow:2px 2px 5px black;
+}
+
+.instruccion{
+color:#1565c0;
+font-size:20px;
+margin-bottom:20px;
+font-weight:bold;
+text-shadow:1px 1px 2px white;
+}
+
+.pregunta{
+font-size:40px;
+color:#d84315;
+margin:25px;
+font-weight:bold;
+}
+
+#pregunta{
+color:#e65100;
+font-size:42px;
+font-weight:bold;
+text-shadow:1px 1px 3px rgba(0,0,0,.2);
+}
+
+.barra-superior{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 25px;
+background:rgba(255,255,255,0.95);
+box-shadow:0 2px 10px rgba(0,0,0,.2);
+border-radius:15px;
+}
+.opciones{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.opcion{
+width:130px;
+height:130px;
+background:#ffeb3b;
+border-radius:25px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:42px;
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 6px 15px rgba(0,0,0,.4);
+transition:.2s;
+position:relative;
+}
+
+.opcion:hover{
+transform:scale(1.08);
+background:#fff176;
+}
+
+.correctoAnim{
+animation:pop 0.5s ease;
+background:#00e676 !important;
+color:white;
+}
+
+@keyframes pop{
+0%{transform:scale(0.8);}
+50%{transform:scale(1.3);}
+100%{transform:scale(1);}
+}
+
+.incorrectoAnim{
+animation:shake 0.4s;
+background:#ff1744 !important;
+color:white;
+}
+
+@keyframes shake{
+0%{transform:translateX(0);}
+25%{transform:translateX(-8px);}
+50%{transform:translateX(8px);}
+75%{transform:translateX(-8px);}
+100%{transform:translateX(0);}
+}
+
+#mensaje{
+font-size:35px;
+font-weight:bold;
+margin-top:20px;
+}
+
+.correctoText{
+color:#00ff99;
+text-shadow:0 0 10px #00ff99;
+}
+
+.incorrectoText{
+color:#ff5252;
+}
+
+button{
+padding:12px 20px;
+border:none;
+border-radius:12px;
+background:#4caf50;
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+margin:10px;
+transition:.2s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+#btnSiguiente:disabled{
+background:gray;
+}
+
+</style>
+</head>
+<body>
+
+<header class="barra-superior">
+
+<div class="usuario">
+<img id="avatarUsuario" src="img/avatar.png">
+<span id="nombreUsuario">Estudiante</span>
+</div>
+
+<div class="puntaje">
+⭐ <span id="puntos">0</span>
+</div>
+
+</header>
+
+<div class="contenedor">
+
+<h1>🎯 Atrapa el número correcto</h1>
+
+<p class="instruccion">
+Haz clic en la respuesta correcta.
+</p>
+
+<div class="pregunta">
+<h2 id="pregunta">Cargando...</h2>
+</div>
+
+<div class="opciones" id="opciones"></div>
+
+<div id="mensaje"></div>
+
+<button onclick="reiniciarJuego()">🔄 Reiniciar</button>
+
+<button id="btnSiguiente" disabled onclick="irSiguiente()">➡️ Siguiente Nivel</button>
+
+<a href="todoslosjuegos.html"><button>🏠 Inicio</button></a>
+
+</div>
+
+<audio id="audioCorrecto" src="audio/correcto.mp3"></audio>
+<audio id="audioError" src="audio/error.mp3"></audio>
+<audio id="audioFelicitacion" src="audio/felicitaciones.mp3"></audio>
+
+<script>
+
+let preguntas = [
+{txt:"6 + 4", res:10},
+{txt:"8 + 3", res:11},
+{txt:"9 - 2", res:7},
+{txt:"5 × 2", res:10},
+{txt:"12 ÷ 3", res:4}
+];
+
+let indice = 0;
+let puntaje = parseInt(localStorage.getItem("puntaje")) || 0;
+
+document.getElementById("puntos").textContent = puntaje;
+
+window.onload = () => {
+
+let nombre = localStorage.getItem("nombre") || "Estudiante";
+let avatar = localStorage.getItem("avatar") || "img/avatar.png";
+
+document.getElementById("nombreUsuario").textContent = nombre;
+document.getElementById("avatarUsuario").src = avatar;
+
+cargarPregunta();
+
+};
+
+function cargarPregunta(){
+
+if(indice >= preguntas.length){
+
+document.getElementById("pregunta").innerHTML =
+"🏆 ¡Juego completado!";
+
+document.getElementById("mensaje").innerHTML =
+"🎉 ¡EXCELENTE TRABAJO!";
+
+confetti({
+particleCount:350,
+spread:120
+});
+
+document.getElementById("audioFelicitacion").play();
+
+document.getElementById("btnSiguiente").disabled = false;
+
+return;
+}
+
+let p = preguntas[indice];
+
+document.getElementById("pregunta").innerHTML = p.txt;
+
+let opciones = [p.res];
+
+while(opciones.length < 3){
+let fake = p.res + Math.floor(Math.random()*10)-5;
+if(!opciones.includes(fake) && fake >= 0){
+opciones.push(fake);
+}
+}
+
+opciones.sort(()=>Math.random()-0.5);
+
+let cont = document.getElementById("opciones");
+cont.innerHTML = "";
+
+opciones.forEach(num=>{
+
+let div = document.createElement("div");
+div.className = "opcion";
+div.innerText = num;
+
+div.onclick = () => validar(div, num);
+
+cont.appendChild(div);
+
+});
+
+}
+
+function validar(div, num){
+
+if(num === preguntas[indice].res){
+
+div.classList.add("correctoAnim");
+
+document.getElementById("audioCorrecto").play();
+
+document.getElementById("mensaje").innerHTML =
+"🎉 ¡CORRECTO!";
+
+document.getElementById("mensaje").className =
+"correctoText";
+
+confetti({
+particleCount:150,
+spread:90
+});
+
+puntaje += 10;
+localStorage.setItem("puntaje",puntaje);
+document.getElementById("puntos").textContent = puntaje;
+
+indice++;
+
+setTimeout(()=>{
+cargarPregunta();
+document.getElementById("mensaje").innerHTML = "";
+},900);
+
+}else{
+
+div.classList.add("incorrectoAnim");
+
+document.getElementById("audioError").play();
+
+document.getElementById("mensaje").innerHTML =
+"❌ Intenta otra vez";
+
+document.getElementById("mensaje").className =
+"incorrectoText";
+
+setTimeout(()=>{
+div.classList.remove("incorrectoAnim");
+},500);
+
+}
+
+}
+
+function reiniciarJuego(){
+
+indice = 0;
+cargarPregunta();
+document.getElementById("mensaje").innerHTML = "";
+document.getElementById("btnSiguiente").disabled = true;
+
+}
+
+function irSiguiente(){
+window.location.href = "juego5.html";
+}
+
+</script>
+
+</body>
+</html>
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juego 5 - Quiz de Restas</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+background-image:url("img/fondo.jpeg");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+background-attachment:fixed;
+min-height:100vh;
+}
+.contenedor{
+background:white;
+width:90%;
+max-width:700px;
+padding:30px;
+border-radius:25px;
+text-align:center;
+box-shadow:0 0 25px rgba(0,0,0,.3);
+}
+
+h1{
+color:#1976d2;
+margin-bottom:20px;
+}
+
+.info{
+display:flex;
+justify-content:space-between;
+font-size:22px;
+font-weight:bold;
+margin-bottom:20px;
+}
+
+#pregunta{
+font-size:45px;
+margin:25px 0;
+color:#333;
+}
+
+.opciones{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.opcion{
+padding:18px;
+font-size:24px;
+border:none;
+border-radius:15px;
+cursor:pointer;
+background:#e3f2fd;
+transition:.3s;
+}
+
+.opcion:hover{
+transform:scale(1.05);
+}
+
+.correcta{
+background:#4caf50 !important;
+color:white;
+}
+
+.incorrecta{
+background:#f44336 !important;
+color:white;
+}
+
+#mensaje{
+margin-top:20px;
+font-size:28px;
+font-weight:bold;
+height:40px;
+}
+
+#siguiente,
+#reiniciar{
+display:none;
+margin-top:25px;
+padding:15px 30px;
+font-size:22px;
+color:white;
+border:none;
+border-radius:15px;
+cursor:pointer;
+}
+
+#siguiente{
+background:#ff9800;
+}
+
+#reiniciar{
+background:#4caf50;
+}
+
+.personaje{
+font-size:70px;
+margin-bottom:15px;
+animation:flotar 2s infinite;
+}
+
+@keyframes flotar{
+0%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0);}
+}
+
+</style>
+</head>
+<body>
+<a href="todoslosjuegos.html">
+<button type="button">
+🏠 Inicio
+</button>
+</a>
+<div class="contenedor">
+
+<div class="personaje">🚀</div>
+
+<h1>Juego 5: Restas Espaciales</h1>
+
+<div class="info">
+<div>⭐ Puntos: <span id="puntos">0</span></div>
+<div>❤️ Vidas: <span id="vidas">3</span></div>
+</div>
+
+<div id="pregunta"></div>
+
+<div class="opciones" id="opciones"></div>
+
+<div id="mensaje"></div>
+
+<button id="reiniciar">🔄 Intentarlo Nuevamente</button>
+
+<button id="siguiente">🚀 Siguiente Juego</button>
+
+</div>
+
+<script>
+
+let puntos = 0;
+let vidas = 3;
+let correcta = 0;
+
+const pregunta = document.getElementById("pregunta");
+const opciones = document.getElementById("opciones");
+const mensaje = document.getElementById("mensaje");
+
+function nuevaPregunta(){
+
+let a = Math.floor(Math.random()*50)+20;
+let b = Math.floor(Math.random()*20)+1;
+
+correcta = a-b;
+
+pregunta.innerHTML = `${a} - ${b} = ?`;
+
+let respuestas=[correcta];
+
+while(respuestas.length<4){
+
+let falsa = correcta + Math.floor(Math.random()*15)-7;
+
+if(falsa>=0 && !respuestas.includes(falsa)){
+respuestas.push(falsa);
+}
+
+}
+
+respuestas.sort(()=>Math.random()-0.5);
+
+opciones.innerHTML="";
+
+respuestas.forEach(num=>{
+
+let btn=document.createElement("button");
+
+btn.className="opcion";
+
+btn.innerHTML=num;
+
+btn.onclick=()=>verificar(num,btn);
+
+opciones.appendChild(btn);
+
+});
+
+}
+
+function verificar(respuesta,boton){
+
+let botones=document.querySelectorAll(".opcion");
+
+botones.forEach(b=>b.disabled=true);
+
+if(respuesta===correcta){
+
+boton.classList.add("correcta");
+
+mensaje.innerHTML="🎉 ¡Correcto!";
+
+puntos++;
+
+document.getElementById("puntos").innerHTML=puntos;
+
+if(puntos>=10){
+
+pregunta.innerHTML="🏆 ¡MISIÓN COMPLETADA!";
+
+opciones.innerHTML="";
+
+mensaje.innerHTML="Has desbloqueado el Juego 6";
+
+document.getElementById("siguiente").style.display="inline-block";
+
+return;
+}
+
+setTimeout(nuevaPregunta,1000);
+
+}else{
+
+boton.classList.add("incorrecta");
+
+mensaje.innerHTML="❌ Incorrecto";
+
+vidas--;
+
+document.getElementById("vidas").innerHTML=vidas;
+
+if(vidas<=0){
+
+pregunta.innerHTML="💀 Fin del Juego";
+
+opciones.innerHTML="";
+
+mensaje.innerHTML="Te quedaste sin vidas";
+
+document.getElementById("reiniciar").style.display="inline-block";
+
+return;
+}
+
+setTimeout(nuevaPregunta,1000);
+
+}
+
+}
+
+document.getElementById("siguiente").onclick=function(){
+window.location.href="juego6.html";
+}
+
+document.getElementById("reiniciar").onclick=function(){
+
+puntos=0;
+vidas=3;
+
+document.getElementById("puntos").innerHTML=puntos;
+document.getElementById("vidas").innerHTML=vidas;
+
+mensaje.innerHTML="";
+
+document.getElementById("reiniciar").style.display="none";
+
+nuevaPregunta();
+
+}
+
+nuevaPregunta();
+
+</script>
+
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Juego 6 - Encuentra el Tesoro</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background-image:url("img/fondo.jpeg");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+min-height:100vh;
+text-align:center;
+overflow:hidden;
+}
+
+h1{
+margin-top:20px;
+font-size:45px;
+color:white;
+text-shadow:2px 2px 5px black;
+}
+
+.info{
+display:flex;
+justify-content:center;
+gap:40px;
+margin:20px;
+font-size:28px;
+font-weight:bold;
+color:white;
+}
+
+#pregunta{
+font-size:40px;
+color:white;
+margin:20px;
+text-shadow:2px 2px 5px black;
+}
+
+#tablero{
+width:90%;
+max-width:900px;
+margin:auto;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+padding:20px;
+}
+
+.moneda{
+width:120px;
+height:120px;
+margin:auto;
+border-radius:50%;
+background:gold;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:40px;
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 0 15px black;
+transition:.3s;
+}
+
+.moneda:hover{
+transform:scale(1.1);
+}
+
+#mensaje{
+font-size:30px;
+font-weight:bold;
+margin-top:20px;
+color:white;
+text-shadow:2px 2px 5px black;
+}
+
+@media(max-width:768px){
+
+#tablero{
+grid-template-columns:repeat(2,1fr);
+}
+
+.moneda{
+width:100px;
+height:100px;
+font-size:30px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>🏴‍☠️ Encuentra el Tesoro Correcto</h1>
+
+<div class="info">
+<div>⭐ Aciertos: <span id="aciertos">0</span>/5</div>
+<div>❤️ Vidas: <span id="vidas">3</span></div>
+</div>
+
+<div id="pregunta"></div>
+
+<div id="tablero"></div>
+
+<div id="mensaje"></div>
+
+<audio id="audioCorrecto" src="audio/correcto.mp3"></audio>
+<audio id="audioError" src="audio/error.mp3"></audio>
+<audio id="audioFelicitacion" src="audio/felicitaciones.mp3"></audio>
+
+<script>
+
+let vidas = 3;
+let aciertos = 0;
+let respuestaCorrecta = 0;
+
+const tablero =
+document.getElementById("tablero");
+
+function nuevaPregunta(){
+
+let a =
+Math.floor(Math.random()*10)+1;
+
+let b =
+Math.floor(Math.random()*10)+1;
+
+respuestaCorrecta = a + b;
+
+document.getElementById(
+"pregunta"
+).innerHTML =
+`💰 ¿Cuánto es ${a} + ${b}?`;
+
+crearMonedas();
+
+}
+
+function crearMonedas(){
+
+tablero.innerHTML = "";
+
+let numeros = [respuestaCorrecta];
+
+while(numeros.length < 8){
+
+let falso =
+respuestaCorrecta +
+Math.floor(Math.random()*10)-5;
+
+if(
+falso > 0 &&
+!numeros.includes(falso)
+){
+numeros.push(falso);
+}
+
+}
+
+numeros.sort(
+()=>Math.random()-0.5
+);
+
+numeros.forEach(numero=>{
+
+let moneda =
+document.createElement("div");
+
+moneda.className =
+"moneda";
+
+moneda.innerHTML =
+numero;
+
+moneda.onclick =
+()=> validar(numero);
+
+tablero.appendChild(moneda);
+
+});
+
+}
+
+function validar(numero){
+
+if(numero === respuestaCorrecta){
+
+document.getElementById(
+"audioCorrecto"
+).play();
+
+document.getElementById(
+"mensaje"
+).innerHTML =
+"✅ ¡Correcto!";
+
+aciertos++;
+
+document.getElementById(
+"aciertos"
+).innerHTML =
+aciertos;
+
+if(aciertos >= 5){
+
+ganar();
+
+return;
+
+}
+
+setTimeout(()=>{
+
+document.getElementById(
+"mensaje"
+).innerHTML="";
+
+nuevaPregunta();
+
+},1000);
+
+}else{
+
+document.getElementById(
+"audioError"
+).play();
+
+vidas--;
+
+document.getElementById(
+"vidas"
+).innerHTML =
+vidas;
+
+document.getElementById(
+"mensaje"
+).innerHTML =
+"❌ Incorrecto";
+
+if(vidas <= 0){
+
+document.getElementById(
+"mensaje"
+).innerHTML =
+"💀 GAME OVER";
+
+setTimeout(()=>{
+
+location.reload();
+
+},2500);
+
+}
+
+}
+
+}
+
+function ganar(){
+
+document.getElementById(
+"audioFelicitacion"
+).play();
+
+confetti({
+particleCount:300,
+spread:180
+});
+
+document.getElementById(
+"mensaje"
+).innerHTML =
+"🏆 ¡ENCONTRASTE TODOS LOS TESOROS!";
+
+setTimeout(()=>{
+
+window.location.href =
+"final.html";
+
+},3000);
+
+}
+
+nuevaPregunta();
+
+</script>
+
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Icono -->
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135768.png">
+
+    <title>Aprendamos Matemática</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/estilo_mates.css">
+</head>
+
+<body>
+
+    <!-- Número flotante -->
+    <div id="numeroFlotante"></div>
+
+    <!-- Usuario -->
+    <div class="usuario">
+
+        <img id="avatarUsuario"
+            src="https://i.pravatar.cc/150?img=5"
+            alt="Avatar">
+
+        <h2 id="nombreUsuario">Usuario</h2>
+
+    </div>
+
+    <!-- Título -->
+    <header>
+
+        <h1>Aprendamos a contar del 1 al 10</h1>
+
+    </header>
+
+    <!-- Imagen -->
+    <div class="imagen-principal">
+
+        <img src="img/plaataforma.jpg" alt="Números">
+
+    </div>
+
+    <!-- Tarjetas -->
+    <div class="contenedor">
+
+        <div class="tarjeta" onclick="reproducirNumero(1)">1️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(2)">2️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(3)">3️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(4)">4️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(5)">5️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(6)">6️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(7)">7️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(8)">8️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(9)">9️⃣</div>
+
+        <div class="tarjeta" onclick="reproducirNumero(10)">🔟</div>
+
+    </div>
+
+    <!-- Botón -->
+    <button class="boton" onclick="mostrarMensaje()">
+
+        Comenzar
+
+    </button>
+
+    <!-- Mensaje -->
+    <p id="mensaje"></p>
+
+    <!-- JS -->
+    <script src="js/matematica.js"></script>
+
+</body>
+
+</html>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Todos los Juegos</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#4facfe,#00f2fe);
+padding:20px;
+}
+
+.contenedor{
+text-align:center;
+background:white;
+padding:30px;
+border-radius:25px;
+box-shadow:0 10px 30px rgba(0,0,0,.3);
+max-width:1000px;
+width:100%;
+}
+
+h1{
+color:#2196f3;
+margin-bottom:10px;
+font-size:40px;
+}
+
+p{
+font-size:20px;
+margin-bottom:30px;
+color:#555;
+}
+
+.juegos{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:25px;
+}
+
+.juego{
+width:150px;
+height:150px;
+border-radius:50%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+cursor:pointer;
+font-size:22px;
+font-weight:bold;
+color:white;
+text-decoration:none;
+transition:.3s;
+box-shadow:0 5px 15px rgba(0,0,0,.3);
+}
+
+.juego:hover{
+transform:scale(1.1);
+}
+
+.j1{background:#ff9800;}
+.j2{background:#4caf50;}
+.j3{background:#e91e63;}
+.j4{background:#3f51b5;}
+.j5{background:#9c27b0;}
+.j6{background:#f44336;}
+
+.numero{
+font-size:45px;
+}
+
+.nombre{
+font-size:16px;
+padding:0 10px;
+text-align:center;
+}
+
+</style>
+</head>
+<body>
+
+<div class="contenedor">
+
+<h1>🎮 Centro de Juegos Matemáticos</h1>
+
+<p>Selecciona el juego que deseas jugar</p>
+
+<div class="juegos">
+
+<a href="juego1.html" class="juego j1">
+<div class="numero">1</div>
+<div class="nombre">Carrera Espacial</div>
+</a>
+
+<a href="juego2.html" class="juego j2">
+<div class="numero">2</div>
+<div class="nombre">Cohete Matemático</div>
+</a>
+
+<a href="juego3.html" class="juego j3">
+<div class="numero">3</div>
+<div class="nombre">Memoria Numérica</div>
+</a>
+
+<a href="juego4.html" class="juego j4">
+<div class="numero">4</div>
+<div class="nombre">Atrapa el Número</div>
+</a>
+
+<a href="juego5.html" class="juego j5">
+<div class="numero">5</div>
+<div class="nombre">Quiz de Restas</div>
+</a>
+
+<a href="juego6.html" class="juego j6">
+<div class="numero">6</div>
+<div class="nombre">Desafío Final</div>
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>
