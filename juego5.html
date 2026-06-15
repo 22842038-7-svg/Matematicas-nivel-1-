@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -88,21 +89,36 @@ font-weight:bold;
 height:40px;
 }
 
-#siguiente{
+#siguiente,
+#reiniciar{
 display:none;
 margin-top:25px;
 padding:15px 30px;
 font-size:22px;
-background:#ff9800;
 color:white;
 border:none;
 border-radius:15px;
 cursor:pointer;
 }
 
+#siguiente{
+background:#ff9800;
+}
+
+#reiniciar{
+background:#4caf50;
+}
+
 .personaje{
 font-size:70px;
 margin-bottom:15px;
+animation:flotar 2s infinite;
+}
+
+@keyframes flotar{
+0%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0);}
 }
 
 </style>
@@ -126,7 +142,9 @@ margin-bottom:15px;
 
 <div id="mensaje"></div>
 
-<button id="siguiente">🚀 Ir al Juego 6</button>
+<button id="reiniciar">🔄 Intentarlo Nuevamente</button>
+
+<button id="siguiente">🚀 Siguiente Juego</button>
 
 </div>
 
@@ -228,7 +246,9 @@ pregunta.innerHTML="💀 Fin del Juego";
 
 opciones.innerHTML="";
 
-mensaje.innerHTML="Inténtalo nuevamente";
+mensaje.innerHTML="Te quedaste sin vidas";
+
+document.getElementById("reiniciar").style.display="inline-block";
 
 return;
 }
@@ -240,8 +260,22 @@ setTimeout(nuevaPregunta,1000);
 }
 
 document.getElementById("siguiente").onclick=function(){
-
 window.location.href="juego6.html";
+}
+
+document.getElementById("reiniciar").onclick=function(){
+
+puntos=0;
+vidas=3;
+
+document.getElementById("puntos").innerHTML=puntos;
+document.getElementById("vidas").innerHTML=vidas;
+
+mensaje.innerHTML="";
+
+document.getElementById("reiniciar").style.display="none";
+
+nuevaPregunta();
 
 }
 
@@ -251,3 +285,4 @@ nuevaPregunta();
 
 </body>
 </html>
+```
